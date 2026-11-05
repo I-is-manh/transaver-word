@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Transaver Word</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <picture>
+        <source srcset="../icons/wordmark-dark.svg" media="(prefers-color-scheme: dark)" />
+        <img src="../icons/wordmark.svg" alt="Transaver Word" height="26" />
+      </picture>
+    </header>
+
+    <section class="langs" aria-label="Cặp ngôn ngữ">
+      <label>
+        <span class="label">Dịch từ (A)</span>
+        <select id="src"></select>
+      </label>
+      <button id="swap" type="button" title="Đổi chiều dịch" aria-label="Đổi chiều dịch"></button>
+      <label>
+        <span class="label">Sang (B)</span>
+        <select id="tgt"></select>
+      </label>
+    </section>
+    <p id="saved" class="hint" aria-live="polite"></p>
+
+    <section class="quick">
+      <textarea id="input" rows="3" placeholder="Nhập hoặc dán văn bản cần dịch…" maxlength="500"></textarea>
+      <div class="row">
+        <span id="count" class="hint">0/500</span>
+        <button id="translate" type="button" class="primary">Dịch</button>
+      </div>
+      <div id="result" aria-live="polite" hidden></div>
+    </section>
+
+    <label class="toggle">
+      <input id="showIcon" type="checkbox" />
+      <span>Hiện icon dịch khi bôi đen văn bản</span>
+    </label>
+
+    <script src="../src/icons.js"></script>
+    <script src="../src/languages.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
