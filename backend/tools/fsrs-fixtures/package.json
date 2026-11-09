@@ -1,0 +1,8 @@
+{
+  "name": "fsrs-fixtures",
+  "private": true,
+  "description": "Sinh dữ liệu chuẩn từ ts-fsrs để test bản FSRS viết bằng PHP",
+  "type": "module",
+  "scripts": { "generate": "node generate.mjs" },
+  "dependencies": { "ts-fsrs": "5.2.3" }
+}

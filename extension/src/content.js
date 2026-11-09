@@ -16,6 +16,9 @@
   let anchor = null; // vị trí vùng chọn, toạ độ theo trang
   let lastDetected = null;
   let requestSeq = 0;
+  let selectionContext = null; // { sentence, word_offset, word_length } của lần bôi đen hiện tại
+  let canSave = false; // false sau khi đổi chiều dịch (câu ngữ cảnh không còn khớp)
+  const MAX_SAVE_LENGTH = 100;
 
   TV.getSettings().then((s) => {
     settings = s;
@@ -57,17 +60,20 @@
     const detected = h('span', { class: 'tv-detected' });
     const speak = h('button', { class: 'tv-btn', type: 'button', title: 'Đọc bản dịch', 'aria-label': 'Đọc bản dịch' }, [TV.icon('audio')]);
     const copy = h('button', { class: 'tv-btn', type: 'button', title: 'Sao chép bản dịch', 'aria-label': 'Sao chép bản dịch' }, [TV.icon('copy')]);
+    const save = h('button', { class: 'tv-save', type: 'button', title: 'Lưu từ này để ôn (Transaver Word)' }, [TV.icon('save', 16), h('span', {}, 'Lưu')]);
+    const saveArea = h('div', { class: 'tv-save-area', 'aria-live': 'polite', hidden: '' });
 
     const panel = h('div', { class: 'tv-panel', role: 'dialog', 'aria-label': 'Kết quả dịch', hidden: '' }, [
       h('div', { class: 'tv-langs' }, [src, swap, tgt, close]),
       source,
       result,
-      h('div', { class: 'tv-footer' }, [detected, h('span', { class: 'tv-actions' }, [speak, copy])]),
+      h('div', { class: 'tv-footer' }, [detected, h('span', { class: 'tv-actions' }, [speak, copy, save])]),
+      saveArea,
     ]);
 
     shadow.append(style, icon, panel);
 
-    ui = { host, icon, panel, src, tgt, swap, close, source, result, detected, speak, copy, lastTranslation: '' };
+    ui = { host, icon, panel, src, tgt, swap, close, source, result, detected, speak, copy, save, saveArea, lastTranslation: '' };
 
     TV.fillSelect(ui.src, { includeAuto: true, compact: true });
     TV.fillSelect(ui.tgt, { includeAuto: false, compact: true });
@@ -93,6 +99,11 @@
     ui.close.addEventListener('click', hideAll);
     ui.speak.addEventListener('click', speakTranslation);
     ui.copy.addEventListener('click', copyTranslation);
+    ui.save.addEventListener('click', saveWord);
+
+    // Sáng/tối theo lựa chọn của người dùng; đổi ngay khi lựa chọn đổi
+    TV.appearance.get().then((v) => TV.appearance.apply(host, v));
+    TV.appearance.watch((v) => TV.appearance.apply(host, v));
 
     (document.body || document.documentElement).appendChild(host);
     return ui;
@@ -167,6 +178,8 @@
     }
 
     selectedText = text;
+    selectionContext = TV.captureContext ? TV.captureContext(sel, text) : null;
+    canSave = true;
     anchor = {
       left: rect.left + window.scrollX,
       right: rect.right + window.scrollX,
@@ -208,6 +221,7 @@
     ui.icon.hidden = true;
     ui.source.textContent = selectedText;
     ui.panel.hidden = false;
+    resetSave();
     positionPanel();
     runTranslate();
   }
@@ -279,6 +293,7 @@
     } else {
       ui.detected.textContent = '';
     }
+    if (!ui.save.classList.contains('is-saved')) updateSaveButton();
     positionPanel();
   }
 
@@ -288,6 +303,109 @@
     const ok = state === 'ok';
     ui.copy.disabled = !ok;
     ui.speak.disabled = !ok;
+    if (!ui.save.classList.contains('is-saved')) updateSaveButton();
+  }
+
+  // ---------- Lưu từ (docs/api-contract.md mục 3.4) ----------
+
+  function sourceLangForSave() {
+    if (settings.sourceLang !== TV.AUTO) return settings.sourceLang;
+    if (!lastDetected) return null;
+    const found = TV.findLang(lastDetected);
+    return found ? found.code : String(lastDetected).split('-')[0];
+  }
+
+  function saveBlockReason() {
+    if (!canSave) return 'Đổi chiều dịch rồi thì không lưu được. Bôi đen lại từ trên trang để lưu.';
+    if (selectedText.length > MAX_SAVE_LENGTH)
+      return `Chỉ lưu được từ hoặc cụm từ ngắn (tối đa ${MAX_SAVE_LENGTH} ký tự).`;
+    if (ui.result.dataset.state === 'loading') return 'Đang dịch…';
+    if (!sourceLangForSave()) return 'Chưa nhận diện được ngôn ngữ. Hãy chọn ngôn ngữ nguồn.';
+    return null;
+  }
+
+  function updateSaveButton() {
+    const reason = saveBlockReason();
+    ui.save.disabled = !!reason;
+    ui.save.title = reason || 'Lưu từ này để ôn (Transaver Word)';
+  }
+
+  function resetSave() {
+    ui.save.classList.remove('is-saved', 'tv-fx-pulse');
+    ui.save.replaceChildren(TV.icon('save', 16), h('span', {}, 'Lưu'));
+    ui.saveArea.hidden = true;
+    ui.saveArea.replaceChildren();
+    updateSaveButton();
+  }
+
+  function showSaveMessage(kind, text, extra) {
+    ui.saveArea.hidden = false;
+    ui.saveArea.replaceChildren(h('p', { class: `tv-save-msg is-${kind}` }, text), ...(extra || []));
+    positionPanel();
+  }
+
+  async function saveWord() {
+    if (saveBlockReason() || ui.save.classList.contains('is-saved')) return;
+    const ctx = selectionContext || { sentence: selectedText, word_offset: 0, word_length: selectedText.length };
+    const payload = {
+      text: selectedText,
+      source_lang: sourceLangForSave(),
+      target_lang: settings.targetLang,
+      sentence: ctx.sentence || selectedText,
+      word_offset: ctx.word_offset,
+      word_length: ctx.word_length,
+      page_title: document.title || null,
+      page_url: location.href,
+      translation: ui.result.dataset.state === 'ok' ? ui.lastTranslation : null,
+    };
+    ui.save.disabled = true;
+    ui.save.replaceChildren(h('span', {}, 'Đang lưu…'));
+    let res;
+    try {
+      res = await chrome.runtime.sendMessage({ type: 'TV_SAVE_WORD', payload });
+    } catch (_) {
+      res = { ok: false, error: 'Extension vừa được cập nhật. Hãy tải lại trang (F5).' };
+    }
+    if (!res?.ok) {
+      ui.save.replaceChildren(TV.icon('save', 16), h('span', {}, 'Lưu lại'));
+      updateSaveButton();
+      const hint =
+        res?.status === 401
+          ? 'Bạn chưa đăng nhập. Mở trang Transaver Word và đăng nhập ở đó, rồi bấm Lưu lại.'
+          : res?.error || 'Không lưu được. Bấm Lưu lại để thử lần nữa.';
+      showSaveMessage('error', hint);
+      return;
+    }
+    const data = res.data;
+    ui.save.classList.add('is-saved');
+    ui.save.replaceChildren(TV.icon('check', 16), h('span', {}, 'Đã lưu'));
+    ui.save.disabled = true;
+    ui.save.title = 'Đã lưu vào Từ của tôi';
+    pulse(ui.save);
+    renderSaved(data);
+  }
+
+  function pulse(el) {
+    el.classList.remove('tv-fx-pulse');
+    void el.offsetWidth;
+    el.classList.add('tv-fx-pulse');
+  }
+
+  /** Sau khi lưu: chỉ báo đã lưu và nghĩa đã lưu (không bắt chọn nghĩa). */
+  function renderSaved(data) {
+    const { word, context, word_created, context_created } = data;
+    const status = word_created
+      ? 'Đã lưu vào Từ của tôi.'
+      : context_created
+        ? 'Từ này đã có, đã thêm câu mới.'
+        : 'Từ và câu này đã có trong sổ từ.';
+    const extra = [];
+    const meaning = (context && context.meaning) || (word && word.meaning);
+    if (meaning) extra.push(h('p', { class: 'tv-save-label' }, `Nghĩa: ${meaning}`));
+    (data.new_achievements || []).forEach((a) =>
+      extra.push(h('p', { class: 'tv-save-msg is-reward' }, `Huy hiệu mới: ${a.name}`)),
+    );
+    showSaveMessage('ok', status, extra);
   }
 
   async function swapLanguages() {
@@ -304,7 +422,9 @@
     if (ui.lastTranslation) {
       selectedText = ui.lastTranslation;
       ui.source.textContent = selectedText;
+      canSave = false; // câu gốc không còn chứa đoạn văn này
     }
+    resetSave();
     runTranslate();
   }
 
@@ -393,8 +513,9 @@
       --shadow-popover: 0 12px 32px rgba(20, 32, 31, 0.18);
       --font-body: "TW Body", "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
     }
+    /* Tối theo hệ điều hành trừ khi chọn Sáng; hoặc khi chọn Tối (contract mục 6.4) */
     @media (prefers-color-scheme: dark) {
-      :host {
+      :host(:not([data-tv-mode="light"])) {
         --brand: #3CC4B4; --brand-strong: #6BD9CB; --brand-tint: #12302D; --on-brand: #0E1514;
         --ink: #E8EFEE; --ink-muted: #9AAAA6;
         --surface-0: #0E1514; --surface-1: #162120;
@@ -402,6 +523,14 @@
         --danger: #F97066;
         --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.55);
       }
+    }
+    :host([data-tv-mode="dark"]) {
+        --brand: #3CC4B4; --brand-strong: #6BD9CB; --brand-tint: #12302D; --on-brand: #0E1514;
+        --ink: #E8EFEE; --ink-muted: #9AAAA6;
+        --surface-0: #0E1514; --surface-1: #162120;
+        --line: #2A3836; --line-strong: #5F716D;
+        --danger: #F97066;
+        --shadow-popover: 0 12px 32px rgba(0, 0, 0, 0.55);
     }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
@@ -440,7 +569,15 @@
       flex: 1; min-width: 0;
       font: 500 13px/18px var(--font-body); color: var(--ink);
       background: var(--surface-0); border: 1px solid var(--line-strong); border-radius: 6px;
-      padding: 5px 6px; cursor: pointer;
+      padding: 5px 26px 5px 8px; cursor: pointer;
+      appearance: none; -webkit-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--ink-muted) 50%),
+        linear-gradient(135deg, var(--ink-muted) 50%, transparent 50%);
+      background-position: right 14px center, right 10px center;
+      background-size: 4px 4px, 4px 4px;
+      background-repeat: no-repeat;
+      text-overflow: ellipsis; white-space: nowrap;
     }
 
     .tv-btn {
@@ -478,9 +615,35 @@
       padding-top: 8px; border-top: 1px solid var(--line);
       font: 400 12px/16px var(--font-body); color: var(--ink-muted);
     }
-    .tv-actions { display: flex; gap: 2px; }
+    .tv-actions { display: flex; align-items: center; gap: 2px; }
+
+    /* Nút Lưu */
+    .tv-save {
+      display: inline-flex; align-items: center; gap: 4px;
+      height: 32px; padding: 0 12px; margin-left: 4px;
+      font: 600 13px/1 var(--font-body);
+      background: var(--brand); color: var(--on-brand);
+      border: none; border-radius: 8px; cursor: pointer;
+    }
+    .tv-save:hover:not(:disabled) { background: var(--brand-strong); }
+    .tv-save:disabled { opacity: .5; cursor: default; }
+    .tv-save.is-saved { opacity: 1; background: var(--brand-tint); color: var(--brand-strong); }
+    .tv-save:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+    .tv-fx-pulse { animation: tv-pulse 700ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+    @keyframes tv-pulse {
+      0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 55%, transparent); }
+      100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--brand) 0%, transparent); }
+    }
+
+    .tv-save-area { display: flex; flex-direction: column; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
+    .tv-save-msg, .tv-save-label, .tv-save-note { margin: 0; font: 400 13px/18px var(--font-body); }
+    .tv-save-msg.is-ok { color: var(--brand-strong); font-weight: 500; }
+    .tv-save-msg.is-error, .tv-save-note.is-error { color: var(--danger); }
+    .tv-save-msg.is-reward { color: var(--ink); font-weight: 600; }
+    .tv-save-label { color: var(--ink-muted); }
+    .tv-save-note.is-ok { color: var(--brand-strong); }
 
     @keyframes tv-pop { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: scale(1); } }
-    @media (prefers-reduced-motion: reduce) { .tv-icon, .tv-panel { animation: none; } }
+    @media (prefers-reduced-motion: reduce) { .tv-icon, .tv-panel, .tv-fx-pulse { animation: none; } }
   `;
 })();

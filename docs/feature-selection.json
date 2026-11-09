@@ -1,0 +1,225 @@
+{
+  "selected": [
+    "m1",
+    "m2",
+    "m3",
+    "m5",
+    "m8",
+    "m9",
+    "m10",
+    "m11",
+    "m12",
+    "m14",
+    "m15",
+    "m16",
+    "m17",
+    "m18",
+    "m19",
+    "g1",
+    "g4",
+    "g5",
+    "g7",
+    "g8",
+    "g9",
+    "g10",
+    "g11",
+    "g12",
+    "g13",
+    "g14",
+    "l1",
+    "l4",
+    "l6",
+    "l7",
+    "l8"
+  ],
+  "items": [
+    {
+      "id": "m1",
+      "label": "Dịch khi bôi đen (nhiều ngôn ngữ, đọc to, sao chép)",
+      "tier": "Phải có",
+      "group": "Extension"
+    },
+    {
+      "id": "m2",
+      "label": "Nút \"Lưu\" kèm câu ngữ cảnh và link trang",
+      "tier": "Phải có",
+      "group": "Extension"
+    },
+    {
+      "id": "m3",
+      "label": "Nghĩa theo ngữ cảnh, phiên âm, phát âm",
+      "tier": "Phải có",
+      "group": "Extension"
+    },
+    {
+      "id": "m5",
+      "label": "Đăng nhập Google",
+      "tier": "Phải có",
+      "group": "Tài khoản"
+    },
+    {
+      "id": "m8",
+      "label": "Danh sách từ đã lưu: tìm, sửa, xóa",
+      "tier": "Phải có",
+      "group": "Từ vựng"
+    },
+    {
+      "id": "m9",
+      "label": "Đánh dấu \"đã biết\" để bỏ khỏi lịch ôn",
+      "tier": "Phải có",
+      "group": "Từ vựng"
+    },
+    {
+      "id": "m10",
+      "label": "Một từ có nhiều câu ngữ cảnh",
+      "tier": "Phải có",
+      "group": "Từ vựng"
+    },
+    {
+      "id": "m11",
+      "label": "Lịch ôn tự động (FSRS)",
+      "tier": "Phải có",
+      "group": "Ôn tập"
+    },
+    {
+      "id": "m12",
+      "label": "Flashcard và trắc nghiệm",
+      "tier": "Phải có",
+      "group": "Ôn tập"
+    },
+    {
+      "id": "m14",
+      "label": "Onboarding 3 câu hỏi",
+      "tier": "Phải có",
+      "group": "Cá nhân hóa và nhắc học"
+    },
+    {
+      "id": "m15",
+      "label": "Mục tiêu mỗi ngày, giờ nhắc học",
+      "tier": "Phải có",
+      "group": "Cá nhân hóa và nhắc học"
+    },
+    {
+      "id": "m16",
+      "label": "Nhắc học qua thông báo trình duyệt và email",
+      "tier": "Phải có",
+      "group": "Cá nhân hóa và nhắc học"
+    },
+    {
+      "id": "m17",
+      "label": "Streak và thẻ đóng băng",
+      "tier": "Phải có",
+      "group": "Động lực"
+    },
+    {
+      "id": "m18",
+      "label": "Thống kê cơ bản: đã lưu, đã thuộc, cần ôn hôm nay",
+      "tier": "Phải có",
+      "group": "Động lực"
+    },
+    {
+      "id": "m19",
+      "label": "Chính sách quyền riêng tư, xóa tài khoản",
+      "tier": "Phải có",
+      "group": "Nền tảng"
+    },
+    {
+      "id": "g1",
+      "label": "Highlight từ đã lưu khi lướt web",
+      "tier": "Tốt nếu có",
+      "group": "Extension"
+    },
+    {
+      "id": "g4",
+      "label": "Lưu cụm từ, thành ngữ",
+      "tier": "Tốt nếu có",
+      "group": "Extension"
+    },
+    {
+      "id": "g5",
+      "label": "Bộ từ (deck) và tag",
+      "tier": "Tốt nếu có",
+      "group": "Từ vựng"
+    },
+    {
+      "id": "g7",
+      "label": "Dạng bài nghe và gõ chính tả",
+      "tier": "Tốt nếu có",
+      "group": "Ôn tập"
+    },
+    {
+      "id": "g8",
+      "label": "Ôn riêng từ khó",
+      "tier": "Tốt nếu có",
+      "group": "Ôn tập"
+    },
+    {
+      "id": "g9",
+      "label": "Chống dồn ứ khi quá nhiều từ đến hạn",
+      "tier": "Tốt nếu có",
+      "group": "Ôn tập"
+    },
+    {
+      "id": "g10",
+      "label": "Tùy chỉnh mức ghi nhớ và thông tin trên thẻ",
+      "tier": "Tốt nếu có",
+      "group": "Ôn tập"
+    },
+    {
+      "id": "g11",
+      "label": "XP, cấp độ, huy hiệu",
+      "tier": "Tốt nếu có",
+      "group": "Động lực và thống kê"
+    },
+    {
+      "id": "g12",
+      "label": "Báo cáo tuần",
+      "tier": "Tốt nếu có",
+      "group": "Động lực và thống kê"
+    },
+    {
+      "id": "g13",
+      "label": "Heatmap và biểu đồ tiến bộ",
+      "tier": "Tốt nếu có",
+      "group": "Động lực và thống kê"
+    },
+    {
+      "id": "g14",
+      "label": "Trang admin cơ bản",
+      "tier": "Tốt nếu có",
+      "group": "Vận hành"
+    },
+    {
+      "id": "l1",
+      "label": "Ảnh minh họa cho từ",
+      "tier": "Để sau",
+      "group": ""
+    },
+    {
+      "id": "l4",
+      "label": "Chia sẻ bộ từ",
+      "tier": "Để sau",
+      "group": ""
+    },
+    {
+      "id": "l6",
+      "label": "Tự đặt câu, AI chấm",
+      "tier": "Để sau",
+      "group": ""
+    },
+    {
+      "id": "l7",
+      "label": "Học cùng bạn bè, bảng xếp hạng",
+      "tier": "Để sau",
+      "group": ""
+    },
+    {
+      "id": "l8",
+      "label": "Đổi điểm lấy theme, Premium",
+      "tier": "Để sau",
+      "group": ""
+    }
+  ],
+  "note": "",
+  "submittedAt": "2026-11-08T07:36:13.168Z"
+}

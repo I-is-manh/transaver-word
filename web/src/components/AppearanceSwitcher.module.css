@@ -1,0 +1,68 @@
+.group {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-1);
+}
+
+.option {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.face {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 32px;
+  height: 30px;
+  padding: 0 8px;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.face svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.option:hover .face {
+  color: var(--ink);
+}
+
+.input:checked + .face {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+.input:focus-visible + .face {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Góc trên bên phải cho trang không có header (đăng nhập, quyền riêng tư, onboarding) */
+.corner {
+  position: fixed;
+  top: calc(var(--top-offset) + var(--space-4));
+  right: var(--space-4);
+  z-index: 20;
+}

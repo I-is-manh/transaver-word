@@ -1,0 +1,392 @@
+.headerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 500;
+}
+.headerLink:hover {
+  background: var(--brand-tint);
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.search {
+  flex: 1;
+  min-width: 240px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--ink-muted);
+}
+.search:focus-within {
+  outline: 2px solid var(--brand);
+  outline-offset: 0;
+  border-color: var(--brand);
+}
+.search input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: var(--ink);
+}
+
+.bulk {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+  background: var(--brand-tint);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+}
+
+.bulkSelect {
+  height: 36px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--ink);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: color-mix(in srgb, var(--brand-tint) 45%, transparent);
+}
+
+.rowChecked {
+  background: var(--brand-tint);
+}
+
+.checkCol {
+  width: 40px;
+}
+
+.checkCol input,
+.table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
+}
+
+.actionsCol {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.wordCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.speak {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.speak:hover {
+  background: var(--brand-tint);
+  color: var(--brand);
+}
+
+.wordLink {
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+.wordLink:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.meta {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.muted {
+  color: var(--ink-muted);
+  font-style: italic;
+}
+
+.statusCell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+.statusCell,
+.nowrap {
+  white-space: nowrap;
+}
+
+.rowActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* Nút chữ trong cột thao tác (vd. bước xác nhận "Xóa hẳn" + Hủy) cao bằng nút icon */
+.rowActions button:not([data-icon-button]) {
+  min-height: 34px;
+  padding: 0 var(--space-3);
+}
+
+.deleteBtn {
+  color: var(--danger);
+}
+
+/* ---------------------------------------------------------------- gom nhóm (mục 3.11) */
+
+.viewBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.langTabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.langTab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface-1);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--tv-duration-fast) var(--tv-ease-standard);
+}
+.langTab:hover {
+  background: var(--brand-tint);
+}
+.langTab:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.langTab[aria-pressed='true'] {
+  background: var(--brand-tint);
+  border-color: var(--brand);
+  color: var(--brand-strong);
+}
+
+.langCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--surface-0);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.langTab[aria-pressed='true'] .langCount {
+  background: var(--surface-1);
+  color: var(--brand-strong);
+}
+
+.groupBy {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+.groupByLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* overflow visible để tiêu đề nhóm dính được khi cuộn trang */
+.tableWrapGrouped {
+  overflow: visible;
+}
+
+.tableFixed {
+  table-layout: fixed;
+}
+.tableFixed td {
+  overflow-wrap: anywhere;
+}
+.colCheck {
+  width: 56px;
+}
+.colWord {
+  width: 32%;
+}
+.colStatus {
+  width: 190px;
+}
+.colActions {
+  width: 146px;
+}
+
+.group + .group {
+  border-top: 1px solid var(--line);
+}
+
+/* Tiêu đề nhóm: dính dưới header app (tính cả thanh impersonate qua --top-offset) */
+.groupHead {
+  position: sticky;
+  top: calc(var(--top-offset) + var(--header-height));
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-0);
+  border-bottom: 1px solid var(--line);
+}
+/* Nhóm cuối đang thu gọn: tiêu đề là đáy khung → bỏ viền dưới, bo góc theo khung */
+.group:last-child:has(table[hidden]) .groupHead {
+  border-bottom: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* Cùng bề rộng nội dung với cột checkbox để ô chọn thẳng cột */
+.groupCheck {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+.groupCheck input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
+}
+
+.groupToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: 0 var(--space-2);
+  margin-left: calc(-1 * var(--space-2));
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+.groupToggle:hover {
+  background: var(--brand-tint);
+}
+.groupToggle:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 0;
+}
+.groupToggle svg {
+  color: var(--ink-muted);
+}
+
+.groupTitle {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.groupCount {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.groupLoading {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+
+.loadMore {
+  display: flex;
+  justify-content: center;
+  min-height: 1px;
+  padding: var(--space-4) 0;
+}

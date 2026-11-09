@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="vi" data-tv-theme="teal">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Extension nhận diện web app để dùng chung phiên đăng nhập (extension/src/web-bridge.js) -->
+    <meta name="transaver-web-app" content="1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="preload"
+      href="/fonts/BeVietnamPro-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <title>Transaver Word</title>
+    <script>
+      // Áp dụng sáng/tối trước khi React render để không nháy màu (contract mục 6.4)
+      try {
+        var m = localStorage.getItem('tv.appearance');
+        if (m === 'light' || m === 'dark') document.documentElement.setAttribute('data-tv-mode', m);
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

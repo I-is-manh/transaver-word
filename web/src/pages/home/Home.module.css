@@ -1,0 +1,133 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-5);
+}
+
+.heroText {
+  padding: var(--space-6);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hello {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.heroTitle {
+  font-size: 28px;
+  line-height: 38px;
+}
+
+.num {
+  color: var(--brand);
+}
+
+.dayProgress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dayText {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.heroActions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.streak,
+.level {
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.streak {
+  display: flex;
+  gap: var(--space-3);
+  color: var(--accent-strong);
+}
+.streak > div {
+  color: var(--ink);
+}
+
+.streakNum {
+  font: 600 32px/40px var(--font-display);
+}
+
+.level {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.levelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--brand);
+}
+.levelRow strong {
+  color: var(--ink);
+}
+
+.small {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+}
+
+.tip {
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--brand-tint);
+}
+.tip h2 {
+  font-size: 18px;
+  margin-bottom: var(--space-2);
+}
+.tip ol {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: var(--space-3);
+}
+.facts span {
+  white-space: nowrap;
+}

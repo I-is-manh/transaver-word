@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kế hoạch thực hiện Transaver Word</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Lexend:wght@600&display=swap">
+<style>
+  /* Layout: tài liệu đọc từ trên xuống: trả lời nhanh → bảng từng chức năng → phần AI → thứ tự làm. Màu, font theo brand/tokens.json */
+  :root {
+    --brand: #0F6E66; --brand-strong: #0B5650; --brand-tint: #E3F3F0;
+    --accent-strong: #8A5A00; --accent-tint: #FDF1D6;
+    --ink: #14201F; --ink-muted: #56645F;
+    --surface-0: #F7F9F8; --surface-1: #FFFFFF;
+    --line: #D9E2DF; --danger: #B42318; --info: #2F5BD3;
+    --font-display: "Lexend", "Be Vietnam Pro", system-ui, sans-serif;
+    --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --brand: #3CC4B4; --brand-strong: #6BD9CB; --brand-tint: #12302D;
+      --accent-strong: #F7B73A; --accent-tint: #3A2E10;
+      --ink: #E8EFEE; --ink-muted: #9AAAA6; --surface-0: #0E1514; --surface-1: #162120;
+      --line: #2A3836; --danger: #F97066; --info: #8AA8F5;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --brand: #3CC4B4; --brand-strong: #6BD9CB; --brand-tint: #12302D;
+    --accent-strong: #F7B73A; --accent-tint: #3A2E10;
+    --ink: #E8EFEE; --ink-muted: #9AAAA6; --surface-0: #0E1514; --surface-1: #162120;
+    --line: #2A3836; --danger: #F97066; --info: #8AA8F5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface-0); color: var(--ink); font: 15px/1.6 var(--font-body); }
+  .wrap {
+    max-width: 1080px; margin: 0 auto; padding-block: 32px 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid; gap: 40px;
+  }
+  h1 { font: 600 28px/1.25 var(--font-display); letter-spacing: -0.01em; margin: 0 0 6px; text-wrap: balance; }
+  h2 { font: 600 21px/1.3 var(--font-display); margin: 0 0 6px; text-wrap: balance; }
+  h3 { font: 600 16px/1.4 var(--font-body); margin: 0 0 6px; }
+  p { margin: 0; max-width: 72ch; }
+  .muted { color: var(--ink-muted); }
+  section { display: grid; gap: 14px; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; background: var(--brand-tint); padding: 1px 5px; border-radius: 4px; }
+
+  .answers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 860px) { .answers { grid-template-columns: 1fr; } }
+  .answer { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+  .answer .q { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--brand); }
+  .answer .a { font: 600 17px/1.4 var(--font-display); }
+
+  .flow { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; }
+  .flow .node { flex: 1 1 200px; background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .flow .node b { display: block; font-family: var(--font-display); font-weight: 600; margin-bottom: 2px; }
+  .flow .node span { color: var(--ink-muted); font-size: 14px; }
+
+  .table-wrap { overflow-x: auto; background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 760px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  th { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-muted); background: var(--surface-0); }
+  tr:last-child td { border-bottom: 0; }
+  td.name { font-weight: 500; width: 22%; }
+  td.where { width: 14%; white-space: nowrap; color: var(--ink-muted); }
+  td.ai { width: 12%; white-space: nowrap; }
+  td.cost { width: 12%; white-space: nowrap; }
+  .tier-row td { background: var(--surface-0); font: 600 14px/1.4 var(--font-display); color: var(--c); }
+
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+  .pill.no { background: var(--surface-0); color: var(--ink-muted); border: 1px solid var(--line); }
+  .pill.yes { background: var(--accent-tint); color: var(--accent-strong); }
+  .pill.opt { background: var(--brand-tint); color: var(--brand-strong); }
+  .free { color: var(--brand-strong); font-weight: 500; }
+  .paid { color: var(--accent-strong); font-weight: 500; }
+
+  .callout { background: var(--brand-tint); border-radius: 12px; padding: 14px 18px; display: grid; gap: 6px; }
+  .callout.warn { background: var(--accent-tint); }
+  .options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 760px) { .options { grid-template-columns: 1fr; } }
+  .opt-card { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 8px; align-content: start; }
+  .opt-card.pick { border: 2px solid var(--brand); }
+  .opt-card header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .opt-card ul { margin: 0; padding-left: 18px; }
+  .opt-card li { margin: 2px 0; font-size: 14px; }
+  .tag { font-size: 12px; font-weight: 600; color: var(--brand-strong); background: var(--brand-tint); padding: 2px 8px; border-radius: 6px; }
+
+  .cost-table td, .cost-table th { font-variant-numeric: tabular-nums; }
+  ol.steps { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 80ch; }
+  .sources { font-size: 13px; color: var(--ink-muted); }
+  .sources a { color: var(--brand); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Kế hoạch thực hiện các chức năng đã chọn</h1>
+    <p class="muted">Giải thích cách làm từng chức năng trong <code>docs/final-decision-features.md</code> (32 chức năng), chỗ nào dùng AI, AI lấy từ đâu và tốn bao nhiêu tiền. Cập nhật 08/11/2026.</p>
+  </header>
+
+  <section>
+    <h2>Trả lời nhanh</h2>
+    <div class="answers">
+      <div class="answer">
+        <div class="q">Claude sẽ làm gì?</div>
+        <div class="a">Viết code cho extension, backend và web app.</div>
+        <p class="muted">Claude chỉ là công cụ viết code. Khi app chạy, nó không gọi tới Claude trong cuộc trò chuyện này. App chỉ dùng AI nếu bạn chọn gắn một AI API vào.</p>
+      </div>
+      <div class="answer">
+        <div class="q">App có dùng AI không?</div>
+        <div class="a">Hiện tại chưa. Trong MVP chỉ 1 chức năng cần AI.</div>
+        <p class="muted">Extension đang dịch bằng MyMemory, không phải AI. Chức năng cần AI là "nghĩa theo ngữ cảnh". Chức năng này cũng làm được bằng cách không dùng AI.</p>
+      </div>
+      <div class="answer">
+        <div class="q">AI có miễn phí không?</div>
+        <div class="a">Có lựa chọn miễn phí, nhưng không phù hợp lâu dài.</div>
+        <p class="muted">Gemini có gói miễn phí nhưng giới hạn thấp và chưa rõ ràng. Claude Haiku 5.5 trả phí, khoảng 1,5 đồng mỗi lần lưu từ. Xem mục 3.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>1. App gồm 3 phần</h2>
+    <div class="flow">
+      <div class="node"><b>Extension (đã có một phần)</b><span>JavaScript, Chrome MV3. Dịch khi bôi đen, nút Lưu, nhắc học, highlight từ trên trang.</span></div>
+      <div class="node"><b>Backend (Laravel, PHP)</b><span>Đăng nhập, lưu từ, lịch sử ôn, gửi email, gọi từ điển và AI. Giữ API key bí mật.</span></div>
+      <div class="node"><b>Web app</b><span>Danh sách từ, ôn tập, onboarding, cài đặt, thống kê. Chỉ làm cho máy tính.</span></div>
+    </div>
+    <p class="muted">Mọi lời gọi tới dịch vụ ngoài có key (AI, gửi email) đều đi qua backend. API key không bao giờ nằm trong extension, vì ai cài extension cũng đọc được code của nó.</p>
+  </section>
+
+  <section>
+    <h2>2. Cách làm từng chức năng</h2>
+    <p class="muted">Cột "Làm ở đâu": E = Extension, B = Backend, W = Web app.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Chức năng</th><th>Claude sẽ làm gì</th><th>Làm ở đâu</th><th>Dùng AI?</th><th>Chi phí</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. Phần AI: lấy ở đâu, có miễn phí không</h2>
+    <p>AI chỉ cần cho 3 chức năng: <b>nghĩa theo ngữ cảnh</b> (MVP), <b>lưu cụm từ</b> (không bắt buộc) và <b>tự đặt câu, AI chấm</b> (để sau). Với "nghĩa theo ngữ cảnh", backend gửi cho AI một câu và một từ, AI trả lại nghĩa đúng của từ trong câu đó. Mỗi lần gọi rất ngắn: khoảng 250 token gửi đi và 60 token nhận về.</p>
+
+    <div class="options">
+      <div class="opt-card">
+        <header><h3>A. Không dùng AI</h3><span class="pill no">Miễn phí</span></header>
+        <ul>
+          <li>Hiện danh sách nghĩa từ Free Dictionary API kèm bản dịch cả câu bằng MyMemory.</li>
+          <li>Người dùng tự bấm chọn nghĩa đúng với câu.</li>
+          <li>Không tốn tiền, không gửi câu của người dùng cho bên AI nào.</li>
+          <li>Nhược điểm: thêm một thao tác mỗi lần lưu, và từ điển chỉ có nghĩa tiếng Anh.</li>
+        </ul>
+      </div>
+      <div class="opt-card">
+        <header><h3>B. Google Gemini (gói miễn phí)</h3><span class="pill opt">Miễn phí có giới hạn</span></header>
+        <ul>
+          <li>Lấy API key miễn phí ở Google AI Studio.</li>
+          <li>Giới hạn số lượt mỗi ngày thấp và hay thay đổi. Các nguồn ghi từ khoảng 20 đến 1.500 lượt/ngày tùy model. Con số chính xác chỉ xem được trong tài khoản AI Studio.</li>
+          <li>Theo điều khoản của Google, dữ liệu gửi qua gói miễn phí có thể được dùng để cải thiện sản phẩm của họ. App gửi câu từ trang người dùng đang đọc nên cần cân nhắc. Bạn nên đọc lại điều khoản hiện hành.</li>
+          <li>Phù hợp để code thử và test, không phù hợp khi phát hành.</li>
+        </ul>
+      </div>
+      <div class="opt-card pick">
+        <header><h3>C. Claude Haiku 5.5 (Anthropic)</h3><span class="pill yes">Trả phí, rất rẻ</span></header>
+        <ul>
+          <li>Tạo API key ở Claude Console (platform.claude.com), nạp tiền trước, trả theo lượng dùng. Không có gói miễn phí lâu dài.</li>
+          <li>Giá: 0,10 USD cho 1 triệu token gửi đi, 0,50 USD cho 1 triệu token nhận về.</li>
+          <li>Mỗi lần lưu từ khoảng 0,000055 USD, tức khoảng 1,5 đồng.</li>
+          <li>Ổn định, dùng được khi phát hành. Backend Laravel gọi qua SDK PHP chính thức của Anthropic.</li>
+        </ul>
+        <span class="tag">Đề xuất khi phát hành</span>
+      </div>
+      <div class="opt-card">
+        <header><h3>D. Tự chạy model mã nguồn mở</h3><span class="pill opt">Model miễn phí, server tốn tiền</span></header>
+        <ul>
+          <li>Ví dụ chạy bằng Ollama trên server riêng.</li>
+          <li>Model không mất phí bản quyền, nhưng cần server đủ mạnh (thường cần GPU), thuê server thường đắt hơn trả tiền API ở quy mô nhỏ.</li>
+          <li>Chất lượng tiếng Việt của model nhỏ thường kém hơn.</li>
+          <li>Chỉ nên cân nhắc khi có rất nhiều người dùng.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Ước tính chi phí với Claude Haiku 5.5</h3>
+    <div class="table-wrap">
+      <table class="cost-table">
+        <thead><tr><th>Quy mô</th><th>Số lần lưu từ mỗi ngày</th><th>Chi phí mỗi tháng</th><th>Quy ra tiền Việt (khoảng)</th></tr></thead>
+        <tbody>
+          <tr><td>100 người, mỗi người lưu 10 từ/ngày</td><td>1.000</td><td>≈ 1,65 USD</td><td>≈ 43.000 đ</td></tr>
+          <tr><td>1.000 người, mỗi người lưu 10 từ/ngày</td><td>10.000</td><td>≈ 16,5 USD</td><td>≈ 430.000 đ</td></tr>
+          <tr><td>10.000 người, mỗi người lưu 10 từ/ngày</td><td>100.000</td><td>≈ 165 USD</td><td>≈ 4,3 triệu đ</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">Tính theo 250 token gửi đi + 60 token nhận về mỗi lần, tỉ giá khoảng 26.000 đ/USD, giá Anthropic tháng 10/2026. Nếu lưu sẵn kết quả (cache) cho các cặp từ và câu đã gặp, chi phí thực tế sẽ thấp hơn.</p>
+
+    <div class="callout warn">
+      <h3>Lưu ý về chi phí</h3>
+      <p>Bạn đã bỏ chức năng "Kiểm soát chi phí AI" ở file quyết định. Không có cache và giới hạn số lượt, một người dùng hoặc một lỗi lặp vô hạn cũng có thể gọi AI liên tục. Mình đề xuất ít nhất làm 2 việc nhỏ khi bật AI: lưu sẵn kết quả theo cặp (từ, câu) và giới hạn số lượt mỗi ngày cho mỗi tài khoản. Hai việc này chỉ mất vài giờ code.</p>
+    </div>
+
+    <div class="callout">
+      <h3>Đề xuất</h3>
+      <p><b>Khi đang code:</b> dùng phương án A (không AI) để mọi thứ chạy được ngay, không tốn tiền. Có thể thử phương án B để so chất lượng.</p>
+      <p><b>Khi phát hành:</b> bật phương án C (Claude Haiku 5.5) qua backend, giữ phương án A làm dự phòng khi AI lỗi hoặc hết lượt.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4. Các dịch vụ miễn phí khác sẽ dùng</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Dịch vụ</th><th>Dùng cho</th><th>Miễn phí?</th><th>Giới hạn cần biết</th></tr></thead>
+        <tbody>
+          <tr><td class="name">MyMemory</td><td>Dịch khi bôi đen (đang dùng)</td><td class="free">Có, không cần key</td><td>Khoảng 5.000 ký tự/ngày cho mỗi IP. Thêm email vào tham số <code>de</code> thì lên khoảng 50.000 ký tự/ngày.</td></tr>
+          <tr><td class="name">Free Dictionary API</td><td>Phiên âm, file phát âm, nghĩa từ điển</td><td class="free">Có, không cần key</td><td>Dịch vụ cộng đồng, không công bố giới hạn. Một số từ không có file phát âm. Nên lưu sẵn kết quả để không gọi lại.</td></tr>
+          <tr><td class="name">Web Speech API</td><td>Đọc to từ, bài nghe và gõ chính tả</td><td class="free">Có, có sẵn trong trình duyệt</td><td>Giọng đọc tùy hệ điều hành. Dùng khi từ điển không có file phát âm.</td></tr>
+          <tr><td class="name">ts-fsrs</td><td>Thuật toán lịch ôn</td><td class="free">Có, mã nguồn mở</td><td>Không phải AI, không gọi dịch vụ ngoài.</td></tr>
+          <tr><td class="name">Google OAuth</td><td>Đăng nhập Google</td><td class="free">Có</td><td>Cần tạo dự án trong Google Cloud Console và khai báo màn hình xin quyền.</td></tr>
+          <tr><td class="name">Dịch vụ gửi email</td><td>Email nhắc học, báo cáo tuần</td><td class="free">Có gói miễn phí</td><td>Nhiều dịch vụ (ví dụ Brevo, Resend) cho gửi miễn phí vài trăm email/ngày hoặc vài nghìn email/tháng. Nên kiểm tra giới hạn hiện tại trước khi chọn.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>5. Thứ tự làm</h2>
+    <ol class="steps">
+      <li><b>Backend nền:</b> dựng Laravel, database theo <code>database-design.md</code>, đăng nhập Google.</li>
+      <li><b>Lưu từ:</b> nút Lưu trong extension, lấy câu ngữ cảnh, gọi từ điển, lưu lên backend (nghĩa theo ngữ cảnh làm theo phương án A trước).</li>
+      <li><b>Web app quản lý từ:</b> danh sách, tìm, sửa, xóa, đánh dấu đã biết, xem các câu ngữ cảnh.</li>
+      <li><b>Ôn tập:</b> FSRS, flashcard, trắc nghiệm, ghi lịch sử ôn.</li>
+      <li><b>Giữ chân người dùng:</b> onboarding, mục tiêu, nhắc học, streak, thống kê.</li>
+      <li><b>Chuẩn bị phát hành:</b> chính sách quyền riêng tư, xóa tài khoản, bật AI (phương án C) kèm cache.</li>
+      <li><b>Sau MVP:</b> các chức năng "Tốt nếu có", bắt đầu từ highlight từ trên trang.</li>
+    </ol>
+  </section>
+
+  <p class="sources">Nguồn tham khảo về giới hạn miễn phí (số liệu bên thứ ba, nên kiểm tra lại trên trang chính thức):
+    <a href="https://www.scriptbyai.com/gemini-api-free-tier-limits/">Gemini free tier (ScriptByAI)</a> ·
+    <a href="https://agentdeals.dev/gemini-api-pricing-changes">Gemini pricing changes (AgentDeals)</a> ·
+    <a href="https://lilting.ch/en/articles/mymemory-api">MyMemory API (Lilting)</a> ·
+    <a href="https://jentic.com/apis/mymemory.translated.net/mymemory">MyMemory spec (Jentic)</a> ·
+    <a href="https://dev.to/trushmi/how-to-use-free-dictionary-api-gec">Free Dictionary API (DEV)</a> ·
+    <a href="https://github.com/open-spaced-repetition/ts-fsrs">ts-fsrs</a>.
+    Giá Claude theo bảng giá Anthropic (cập nhật 10/2026).
+  </p>
+</div>
+
+<script>
+const NO = '<span class="pill no">Không</span>';
+const YES = '<span class="pill yes">Có</span>';
+const OPT = '<span class="pill opt">Tùy chọn</span>';
+const FREE = '<span class="free">Miễn phí</span>';
+const DATA = [
+  ['Phải có (MVP)', '--brand', [
+    ['Dịch khi bôi đen', 'Đã có. Thêm email vào lời gọi MyMemory để tăng giới hạn. Sau này chuyển qua backend để lưu sẵn bản dịch.', 'E (đã có)', NO, FREE],
+    ['Nút "Lưu" kèm câu ngữ cảnh và link', 'Lấy câu chứa vùng bôi đen (tách câu theo dấu chấm), tiêu đề và link trang, gửi lên backend.', 'E + B', NO, FREE],
+    ['Nghĩa theo ngữ cảnh, phiên âm, phát âm', 'Phiên âm và file phát âm lấy từ Free Dictionary API, thiếu thì đọc bằng giọng trình duyệt. Nghĩa theo ngữ cảnh: xem mục 3.', 'E + B', YES, 'Xem mục 3'],
+    ['Đăng nhập Google', 'Google OAuth qua Laravel Socialite. Extension đăng nhập bằng chrome.identity rồi nhận token từ backend.', 'E + B + W', NO, FREE],
+    ['Danh sách từ: tìm, sửa, xóa', 'API thêm/sửa/xóa từ và trang danh sách có ô tìm kiếm, phân trang.', 'B + W', NO, FREE],
+    ['Đánh dấu "đã biết"', 'Đổi trạng thái từ thành "known" để không đưa vào lịch ôn, vẫn giữ trong kho.', 'B + W', NO, FREE],
+    ['Một từ có nhiều câu ngữ cảnh', 'Lưu lại một từ đã có thì chỉ thêm câu mới vào bảng word_contexts, không tạo thẻ mới.', 'B', NO, FREE],
+    ['Lịch ôn tự động (FSRS)', 'Dùng thư viện ts-fsrs để tính ngày ôn tiếp theo. Backend lưu kết quả và lịch sử từng lần ôn.', 'W + B', NO, FREE],
+    ['Flashcard và trắc nghiệm', 'Màn hình ôn tập. Đáp án sai của câu trắc nghiệm lấy từ chính các từ khác của người dùng.', 'W', NO, FREE],
+    ['Điền chỗ trống bằng câu gốc', 'Lấy một câu người dùng đã lưu, che từ đang học bằng vị trí đã ghi lúc lưu, người dùng gõ lại từ đó. Ưu tiên câu chưa dùng gần đây. Từ mới thì cho gợi ý chữ cái đầu, từ đã khá thuộc thì phải gõ đủ.', 'W + B', NO, FREE],
+    ['Onboarding 3 câu hỏi', 'Form 3 câu, quy đổi câu trả lời thành cài đặt ban đầu (số từ mới/ngày, giờ nhắc, dạng bài).', 'W + B', NO, FREE],
+    ['Mục tiêu mỗi ngày, giờ nhắc học', 'Trang cài đặt, lưu vào user_settings dạng JSON.', 'W + B', NO, FREE],
+    ['Nhắc học qua trình duyệt và email', 'Thông báo trình duyệt: extension hẹn giờ bằng chrome.alarms. Email: Laravel scheduler chạy theo giờ của từng người, gửi qua dịch vụ email.', 'E + B', NO, 'Miễn phí ở quy mô nhỏ'],
+    ['Streak và thẻ đóng băng', 'Ghi hoạt động theo ngày. Mỗi ngày một cron kiểm tra: nghỉ thì dùng thẻ đóng băng, hết thẻ thì về 0.', 'B + W', NO, FREE],
+    ['Thống kê cơ bản', 'Đếm số từ đã lưu, đã thuộc, cần ôn hôm nay, hiện ở trang chủ.', 'B + W', NO, FREE],
+    ['Chính sách quyền riêng tư, xóa tài khoản', 'Trang chính sách và nút xóa tài khoản, xóa toàn bộ dữ liệu của người đó.', 'B + W', NO, FREE],
+  ]],
+  ['Tốt nếu có', '--accent-strong', [
+    ['Highlight từ đã lưu khi lướt web', 'Extension tải danh sách từ của người dùng, quét chữ trên trang, gạch chân từ đã lưu, di chuột vào hiện nghĩa.', 'E', NO, FREE],
+    ['Lưu cụm từ, thành ngữ', 'Cho bôi đen nhiều từ. Từ điển thường không có cụm từ nên nghĩa lấy từ bản dịch hoặc AI.', 'E + B', OPT, 'Như mục 3'],
+    ['Bộ từ (deck) và tag', 'Bảng decks và tags. Chỉ xếp từ vào deck trong trang quản lý từ của web app, không có deck tự động. Có thể ôn theo từng deck.', 'B + W', NO, FREE],
+    ['Dạng bài nghe và gõ chính tả', 'Đọc từ bằng file phát âm hoặc giọng trình duyệt, so khớp chữ người dùng gõ.', 'W', NO, FREE],
+    ['Ôn riêng từ khó', 'Đánh dấu từ quên nhiều lần, có buổi ôn riêng cho các từ này.', 'B + W', NO, FREE],
+    ['Chống dồn ứ', 'Giới hạn số thẻ mỗi ngày, tạm ngưng thêm từ mới khi có quá nhiều từ đến hạn.', 'B + W', NO, FREE],
+    ['Tùy chỉnh mức ghi nhớ, thông tin trên thẻ', 'Truyền mức ghi nhớ mong muốn vào ts-fsrs, thêm lựa chọn ẩn/hiện phiên âm, nghĩa tiếng Anh.', 'W', NO, FREE],
+    ['XP, cấp độ, huy hiệu', 'Bảng huy hiệu và luật tính, kiểm tra sau mỗi buổi ôn.', 'B + W', NO, FREE],
+    ['Báo cáo tuần', 'Cron mỗi tuần tổng hợp số liệu và gửi email.', 'B', NO, 'Miễn phí ở quy mô nhỏ'],
+    ['Heatmap và biểu đồ tiến bộ', 'Vẽ từ dữ liệu hoạt động theo ngày.', 'W', NO, FREE],
+    ['Trang admin cơ bản', 'Trang quản trị trong Laravel: số người dùng, số từ lưu, khóa tài khoản.', 'B', NO, FREE],
+  ]],
+  ['Để sau', '--ink-muted', [
+    ['Ảnh minh họa cho từ', 'Tìm ảnh theo từ qua API ảnh có gói miễn phí, cho người dùng chọn.', 'B + W', NO, 'Thường miễn phí'],
+    ['Chia sẻ bộ từ', 'Tạo link chia sẻ deck, người khác bấm vào để sao chép về kho của mình.', 'B + W', NO, FREE],
+    ['Tự đặt câu, AI chấm', 'Người dùng viết câu có từ đang học. AI chỉ trả về câu đúng hay sai (cả ngữ pháp lẫn nghĩa của từ) và câu đã sửa đúng, không kèm giải thích. Định dạng trả về được cố định bằng structured outputs.', 'B + W', YES, '≈ 1 đ/lần chấm'],
+    ['Học cùng bạn bè, bảng xếp hạng', 'Kết bạn, nhóm học, xếp hạng theo tuần. Chỉ có ý nghĩa khi đã nhiều người dùng.', 'B + W', NO, FREE],
+    ['Đổi điểm lấy theme, Premium', 'Cần làm phần thanh toán và gói Premium trước.', 'B + W', NO, 'Phí cổng thanh toán'],
+  ]],
+];
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+document.getElementById('rows').innerHTML = DATA.map(([tier, color, rows]) =>
+  `<tr class="tier-row" style="--c: var(${color})"><td colspan="5">${tier} (${rows.length})</td></tr>` +
+  rows.map(([name, how, where, ai, cost]) =>
+    `<tr><td class="name">${esc(name)}</td><td>${esc(how)}</td><td class="where">${esc(where)}</td><td class="ai">${ai}</td><td class="cost">${cost}</td></tr>`
+  ).join('')
+).join('');
+</script>
+</body>
+</html>

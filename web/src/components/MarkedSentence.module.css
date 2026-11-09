@@ -1,0 +1,5 @@
+/* Từ trong câu ngữ cảnh: chỉ in đậm + màu brand (accent vàng để dành cho streak/XP). */
+.mark {
+  font-weight: 700;
+  color: var(--brand-strong);
+}

@@ -1,0 +1,39 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-6);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+}
+
+.logo {
+  margin-bottom: var(--space-5);
+}
+
+.title {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.subtitle {
+  margin: var(--space-1) 0 0;
+  color: var(--ink-muted);
+}
+
+.footer {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-muted);
+}

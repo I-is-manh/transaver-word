@@ -1,0 +1,273 @@
+/* Hiệu ứng theme Transaver Word: lật thẻ, phản hồi đúng/sai, thanh tiến độ, lớp phủ streak.
+   Cần themes.css (màu + token chuyển động) được nạp trước. Hiệu ứng hạt (sao, lá, bọt…) nằm ở effects.js.
+
+   Cấu trúc HTML (xem docs/theme-system.md):
+     <div class="tv-card" data-tv-flip="flip3d">
+       <div class="tv-card__face tv-card__front">…</div>
+       <div class="tv-card__face tv-card__back">…</div>
+     </div>
+     Lật: thêm class .is-flipped vào .tv-card.
+
+     <div class="tv-progress" data-tv-progress="fill" style="--value: 0.68">
+       <div class="tv-progress__bar"></div>
+     </div>
+*/
+
+/* ---------- Thẻ flashcard: khung chung ---------- */
+.tv-card {
+  display: grid;
+  perspective: 1200px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.tv-card__face {
+  grid-area: 1 / 1;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition-duration: var(--tv-duration-flip);
+  transition-timing-function: var(--tv-ease-standard);
+}
+
+/* flip3d (theme miễn phí): lật quanh trục dọc */
+.tv-card[data-tv-flip="flip3d"] .tv-card__face { transition-property: transform; transform-style: preserve-3d; }
+.tv-card[data-tv-flip="flip3d"] .tv-card__back { transform: rotateY(180deg); }
+.tv-card[data-tv-flip="flip3d"].is-flipped .tv-card__front { transform: rotateY(-180deg); }
+.tv-card[data-tv-flip="flip3d"].is-flipped .tv-card__back { transform: rotateY(0deg); }
+
+/* stardust (Đêm Sao): mặt trước tan thành bụi sao, mặt sau hiện ra (effects.js rắc thêm hạt sao) */
+.tv-card[data-tv-flip="stardust"] .tv-card__face { transition-property: opacity, filter, transform; }
+.tv-card[data-tv-flip="stardust"] .tv-card__back { opacity: 0; filter: blur(6px); transform: scale(1.03); }
+.tv-card[data-tv-flip="stardust"].is-flipped .tv-card__front { opacity: 0; filter: blur(8px); transform: scale(0.96); pointer-events: none; }
+.tv-card[data-tv-flip="stardust"].is-flipped .tv-card__back { opacity: 1; filter: blur(0); transform: scale(1); }
+.tv-card[data-tv-flip="stardust"]:not(.is-flipped) .tv-card__back { pointer-events: none; }
+
+/* page-turn (Mùa Thu): lật như trang sách, bản lề ở mép trái, có bóng đổ */
+.tv-card[data-tv-flip="page-turn"] .tv-card__front {
+  z-index: 2; transform-origin: left center; transition-property: transform, box-shadow;
+  background-image: linear-gradient(90deg, transparent 70%, color-mix(in srgb, var(--ink) 6%, transparent));
+}
+.tv-card[data-tv-flip="page-turn"] .tv-card__back { z-index: 1; backface-visibility: visible; }
+.tv-card[data-tv-flip="page-turn"].is-flipped .tv-card__front {
+  transform: rotateY(-178deg); box-shadow: -18px 0 30px -12px color-mix(in srgb, var(--ink) 35%, transparent);
+  pointer-events: none;
+}
+
+/* ripple (Đại Dương): thẻ chìm xuống như gợn nước rồi mặt sau nổi lên */
+.tv-card[data-tv-flip="ripple"] .tv-card__face { transition-property: opacity, transform, filter; }
+.tv-card[data-tv-flip="ripple"] .tv-card__back { opacity: 0; transform: translateY(14px) scaleY(0.94); filter: blur(4px); pointer-events: none; }
+.tv-card[data-tv-flip="ripple"].is-flipped .tv-card__front { opacity: 0; transform: translateY(-10px) scaleY(0.92); filter: blur(5px); pointer-events: none; }
+.tv-card[data-tv-flip="ripple"].is-flipped .tv-card__back { opacity: 1; transform: none; filter: none; pointer-events: auto; }
+
+/* bloom (Anh Đào): mặt sau nở ra từ tâm như bông hoa */
+.tv-card[data-tv-flip="bloom"] .tv-card__face { transition-property: clip-path, opacity, transform; }
+.tv-card[data-tv-flip="bloom"] .tv-card__back { clip-path: circle(0% at 50% 50%); transform: rotate(-4deg) scale(0.98); }
+.tv-card[data-tv-flip="bloom"].is-flipped .tv-card__front { opacity: 0; transform: scale(0.97); pointer-events: none; }
+.tv-card[data-tv-flip="bloom"].is-flipped .tv-card__back { clip-path: circle(75% at 50% 50%); transform: none; }
+.tv-card[data-tv-flip="bloom"]:not(.is-flipped) .tv-card__back { pointer-events: none; }
+
+/* light-up (Đom Đóm): mặt trước tối đi, mặt sau được thắp sáng từ giữa */
+.tv-card[data-tv-flip="light-up"] .tv-card__face { transition-property: opacity, filter, box-shadow; }
+.tv-card[data-tv-flip="light-up"] .tv-card__back { opacity: 0; filter: brightness(0.3); pointer-events: none; }
+.tv-card[data-tv-flip="light-up"].is-flipped .tv-card__front { opacity: 0; filter: brightness(0.2); pointer-events: none; }
+.tv-card[data-tv-flip="light-up"].is-flipped .tv-card__back {
+  opacity: 1; filter: brightness(1); pointer-events: auto;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand) 50%, transparent), 0 0 36px -6px color-mix(in srgb, var(--brand) 55%, transparent);
+}
+
+/* ---------- Phản hồi đúng: viền sáng lên (mọi theme), effects.js thêm hạt ---------- */
+.tv-fx-correct { animation: tv-correct-glow 900ms var(--tv-ease-standard); }
+@keyframes tv-correct-glow {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 0%, transparent); }
+  25%  { box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 55%, transparent), 0 0 28px color-mix(in srgb, var(--brand) 40%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+.tv-fx-correct-pop { animation: tv-pop 420ms var(--tv-ease-emphasized); }
+@keyframes tv-pop { 0% { transform: scale(1); } 40% { transform: scale(1.04); } 100% { transform: scale(1); } }
+
+/* ---------- Phản hồi sai: mỗi theme một kiểu ---------- */
+.tv-fx-wrong-shake       { animation: tv-shake 420ms var(--tv-ease-standard); }
+.tv-fx-wrong-dim-flicker { animation: tv-dim-flicker 520ms linear; }
+.tv-fx-wrong-branch-sway { animation: tv-branch-sway 640ms var(--tv-ease-standard); transform-origin: 50% 100%; }
+.tv-fx-wrong-wave-wobble { animation: tv-wave-wobble 640ms var(--tv-ease-standard); }
+.tv-fx-wrong-petal-droop { animation: tv-petal-droop 620ms var(--tv-ease-standard); transform-origin: 50% 0%; }
+.tv-fx-wrong-flicker-out { animation: tv-flicker-out 600ms linear; }
+@keyframes tv-shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-7px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(2px); } }
+@keyframes tv-dim-flicker { 0%,100% { filter: none; } 20% { filter: brightness(0.55); } 35% { filter: brightness(1.05); } 55% { filter: brightness(0.7); } 75% { filter: none; } }
+@keyframes tv-branch-sway { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-2.2deg); } 55% { transform: rotate(1.6deg); } 80% { transform: rotate(-0.6deg); } }
+@keyframes tv-wave-wobble { 0%,100% { transform: none; } 25% { transform: skewX(-3deg) translateY(2px); } 50% { transform: skewX(2.5deg) translateY(-2px); } 75% { transform: skewX(-1deg); } }
+@keyframes tv-petal-droop { 0%,100% { transform: none; } 30% { transform: translateY(5px) rotate(1.5deg); } 60% { transform: translateY(-1px) rotate(-0.8deg); } }
+@keyframes tv-flicker-out { 0%,100% { filter: none; opacity: 1; } 15% { filter: brightness(0.5); } 30% { filter: brightness(1.1); } 45% { filter: brightness(0.35); opacity: 0.85; } 70% { filter: brightness(0.9); opacity: 1; } }
+
+/* Nút Lưu (theme miễn phí): vòng sáng lan ra */
+.tv-fx-pulse { animation: tv-pulse 700ms var(--tv-ease-standard); }
+@keyframes tv-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 55%, transparent); }
+  100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* ---------- Thanh tiến độ ---------- */
+.tv-progress {
+  --value: 0;
+  position: relative; height: 12px; border-radius: 999px; overflow: hidden;
+  background: var(--brand-tint);
+}
+.tv-progress__bar {
+  position: absolute; inset: 0 auto 0 0; width: calc(var(--value) * 100%);
+  border-radius: inherit; background: var(--brand);
+  transition: width 600ms var(--tv-ease-standard);
+}
+/* constellation (Đêm Sao): các chấm sao nối nhau, đầu thanh phát sáng */
+.tv-progress[data-tv-progress="constellation"] .tv-progress__bar {
+  background:
+    radial-gradient(circle, var(--on-brand) 0 1.6px, transparent 2.2px) 0 50% / 18px 100% repeat-x,
+    linear-gradient(90deg, color-mix(in srgb, var(--brand) 70%, transparent), var(--brand));
+  box-shadow: 4px 0 14px color-mix(in srgb, var(--brand) 70%, transparent);
+}
+/* branch-grow (Mùa Thu): cành cây có lá */
+.tv-progress[data-tv-progress="branch-grow"] { height: 14px; background: transparent; overflow: visible; }
+.tv-progress[data-tv-progress="branch-grow"]::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px;
+  background: var(--line); border-radius: 2px;
+}
+.tv-progress[data-tv-progress="branch-grow"] .tv-progress__bar {
+  background:
+    radial-gradient(ellipse 5px 3px at 9px 3px, var(--accent) 98%, transparent) 0 0 / 22px 14px repeat-x,
+    radial-gradient(ellipse 5px 3px at 18px 11px, var(--brand) 98%, transparent) 0 0 / 22px 14px repeat-x,
+    linear-gradient(var(--brand), var(--brand)) 0 50% / 100% 3px no-repeat;
+}
+/* wave-fill (Đại Dương): mặt sóng chạy ở đầu thanh */
+.tv-progress[data-tv-progress="wave-fill"] .tv-progress__bar {
+  /* các vòng cung trong suốt ở mép trên tạo mặt sóng, chạy ngang liên tục */
+  background: radial-gradient(circle at 10px -5px, transparent 8px, var(--brand) 8.5px) 0 0 / 20px 100% repeat-x;
+  animation: tv-wave-move 2.4s linear infinite;
+}
+@keyframes tv-wave-move { to { background-position: 20px 0; } }
+/* blossom (Anh Đào): hoa nhỏ dọc thanh */
+.tv-progress[data-tv-progress="blossom"] .tv-progress__bar {
+  background:
+    radial-gradient(circle, var(--accent-tint) 0 2px, transparent 2.5px) 6px 50% / 16px 100% repeat-x,
+    radial-gradient(circle, color-mix(in srgb, var(--on-brand) 55%, transparent) 0 4px, transparent 4.5px) 6px 50% / 16px 100% repeat-x,
+    var(--brand);
+}
+/* glow-fill (Đom Đóm): đầu thanh là đốm sáng bập bùng */
+.tv-progress[data-tv-progress="glow-fill"] { overflow: visible; }
+.tv-progress[data-tv-progress="glow-fill"] .tv-progress__bar { box-shadow: 0 0 10px color-mix(in srgb, var(--brand) 60%, transparent); }
+.tv-progress[data-tv-progress="glow-fill"] .tv-progress__bar::after {
+  content: ""; position: absolute; right: -4px; top: 50%; width: 16px; height: 16px; margin-top: -8px; border-radius: 50%;
+  background: radial-gradient(circle, var(--brand-strong), color-mix(in srgb, var(--brand) 0%, transparent) 70%);
+  animation: tv-lantern 1.8s ease-in-out infinite;
+}
+@keyframes tv-lantern { 0%,100% { opacity: 0.65; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.25); } }
+
+/* ---------- Lớp phủ ăn mừng (xong buổi ôn, mốc streak) do effects.js tạo ---------- */
+.tv-overlay {
+  position: absolute; inset: 0; z-index: 30; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--surface-0) 55%, transparent);
+  animation: tv-fade-in 240ms var(--tv-ease-standard);
+}
+.tv-overlay.is-leaving { animation: tv-fade-out 320ms var(--tv-ease-exit) forwards; }
+.tv-overlay__box { display: grid; justify-items: center; gap: 8px; text-align: center; animation: tv-rise 700ms var(--tv-ease-emphasized); }
+.tv-overlay__icon { width: 112px; height: 112px; filter: drop-shadow(0 6px 22px color-mix(in srgb, var(--accent) 55%, transparent)); animation: tv-icon-pulse 1.6s ease-in-out infinite; }
+.tv-overlay__title { font: 600 26px/1.2 var(--tv-font-display, inherit); color: var(--ink); }
+.tv-overlay__sub { font-size: 15px; color: var(--ink-muted); }
+@keyframes tv-fade-in { from { opacity: 0; } }
+@keyframes tv-fade-out { to { opacity: 0; } }
+@keyframes tv-rise { from { opacity: 0; transform: translateY(18px) scale(0.85); } }
+@keyframes tv-icon-pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+
+/* ---------- Giảm chuyển động: theo hệ điều hành hoặc công tắc trong app ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .tv-card__face, .tv-progress__bar { transition-duration: 1ms !important; }
+  [class*="tv-fx-"], .tv-progress__bar, .tv-progress__bar::after,
+  .tv-overlay, .tv-overlay__box, .tv-overlay__icon { animation: none !important; }
+}
+[data-tv-motion="off"] .tv-card__face, [data-tv-motion="off"] .tv-progress__bar { transition-duration: 1ms !important; }
+[data-tv-motion="off"] [class*="tv-fx-"], [data-tv-motion="off"] .tv-progress__bar,
+[data-tv-motion="off"] .tv-progress__bar::after, [data-tv-motion="off"] .tv-overlay,
+[data-tv-motion="off"] .tv-overlay__box, [data-tv-motion="off"] .tv-overlay__icon { animation: none !important; }
+
+/* =====================================================================
+   Bổ sung: Giấy Kẻ Ô (grid), Bản Đồ Cổ (map), theme theo dịp
+   ===================================================================== */
+
+/* ---------- Nền tĩnh của trang (đặt class .tv-page lên phần tử gốc của trang) ---------- */
+.tv-page[data-tv-theme="grid"] {
+  /* giấy ô ly: ô lớn 24px, kẻ mảnh bằng màu line */
+  background-color: var(--surface-0);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--line) 85%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 85%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.tv-page[data-tv-theme="map"] {
+  /* giấy da: vân mờ ở góc và vài đường kinh tuyến rất nhạt */
+  background-color: var(--surface-0);
+  background-image:
+    radial-gradient(ellipse at 0% 0%, color-mix(in srgb, var(--line-strong) 14%, transparent), transparent 45%),
+    radial-gradient(ellipse at 100% 100%, color-mix(in srgb, var(--line-strong) 12%, transparent), transparent 45%),
+    repeating-linear-gradient(90deg, transparent 0 119px, color-mix(in srgb, var(--line) 70%, transparent) 119px 120px);
+}
+
+/* ---------- Lật thẻ ---------- */
+/* notebook-flip (Giấy Kẻ Ô): lật lên như trang vở gáy lò xo, bản lề mép trên */
+.tv-card[data-tv-flip="notebook-flip"] .tv-card__front { z-index: 2; transform-origin: center top; transition-property: transform, box-shadow; }
+.tv-card[data-tv-flip="notebook-flip"] .tv-card__back { z-index: 1; backface-visibility: visible; }
+.tv-card[data-tv-flip="notebook-flip"].is-flipped .tv-card__front {
+  transform: rotateX(178deg); box-shadow: 0 -16px 26px -14px color-mix(in srgb, var(--ink) 30%, transparent); pointer-events: none;
+}
+/* unfold (Bản Đồ Cổ): mặt trước gấp lại vào giữa, mặt sau mở ra như tờ bản đồ */
+.tv-card[data-tv-flip="unfold"] .tv-card__face { transition-property: transform, opacity; transition-duration: calc(var(--tv-duration-flip) / 2); }
+.tv-card[data-tv-flip="unfold"] .tv-card__back { transform: scaleX(0); opacity: 0; transition-delay: 0ms; pointer-events: none; }
+.tv-card[data-tv-flip="unfold"].is-flipped .tv-card__front { transform: scaleX(0); opacity: 0; pointer-events: none; }
+.tv-card[data-tv-flip="unfold"].is-flipped .tv-card__back { transform: scaleX(1); opacity: 1; transition-delay: calc(var(--tv-duration-flip) / 2); pointer-events: auto; }
+.tv-card[data-tv-flip="unfold"]:not(.is-flipped) .tv-card__front { transition-delay: calc(var(--tv-duration-flip) / 2); }
+
+/* ---------- Trả lời sai ---------- */
+.tv-fx-wrong-erase          { animation: tv-erase 620ms var(--tv-ease-standard); }
+.tv-fx-wrong-compass-wobble { animation: tv-compass 700ms var(--tv-ease-standard); }
+@keyframes tv-erase { 0%,100% { filter: none; transform: none; } 25% { filter: blur(1.5px) opacity(.6); transform: translateX(-4px); } 50% { filter: blur(1px) opacity(.7); transform: translateX(4px); } 75% { filter: blur(.5px); transform: translateX(-2px); } }
+@keyframes tv-compass { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-2.5deg); } 40% { transform: rotate(2deg); } 60% { transform: rotate(-1.2deg); } 80% { transform: rotate(0.6deg); } }
+
+/* ---------- Thanh tiến độ ---------- */
+/* pencil-line (Giấy Kẻ Ô): nét bút chì, đầu thanh là ngòi bút */
+.tv-progress[data-tv-progress="pencil-line"] { height: 14px; background: transparent; overflow: visible; }
+.tv-progress[data-tv-progress="pencil-line"]::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 0; border-top: 2px dashed var(--line-strong); opacity: .5;
+}
+.tv-progress[data-tv-progress="pencil-line"] .tv-progress__bar { top: 4px; bottom: 4px; border-radius: 3px; background: var(--brand); }
+.tv-progress[data-tv-progress="pencil-line"] .tv-progress__bar::after {
+  content: ""; position: absolute; right: -10px; top: 50%; margin-top: -6px;
+  border-left: 10px solid var(--accent); border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+}
+/* route (Bản Đồ Cổ): đường đi nét đứt, đầu thanh cắm cờ */
+.tv-progress[data-tv-progress="route"] { height: 16px; background: transparent; overflow: visible; }
+.tv-progress[data-tv-progress="route"]::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 2px dotted var(--line-strong);
+}
+.tv-progress[data-tv-progress="route"] .tv-progress__bar {
+  top: 6px; bottom: 6px; background: repeating-linear-gradient(90deg, var(--brand) 0 10px, transparent 10px 16px);
+}
+.tv-progress[data-tv-progress="route"] .tv-progress__bar::after {
+  content: ""; position: absolute; right: -2px; bottom: 50%; width: 2px; height: 14px; background: var(--ink-muted);
+  box-shadow: 2px -1px 0 0 var(--accent), 6px -1px 0 0 var(--accent), 2px 3px 0 0 var(--accent), 6px 3px 0 0 var(--accent);
+}
+
+/* ---------- Dấu tích vẽ bằng nét bút (Giấy Kẻ Ô, trả lời đúng) ---------- */
+.tv-check { position: absolute; right: 14px; top: 10px; width: 56px; height: 46px; pointer-events: none; z-index: 5; animation: tv-fade-out 300ms var(--tv-ease-exit) 1100ms forwards; }
+.tv-check svg { width: 100%; height: 100%; overflow: visible; }
+.tv-check path { fill: none; stroke: var(--brand); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 80; stroke-dashoffset: 80; animation: tv-draw 420ms var(--tv-ease-standard) forwards; }
+@keyframes tv-draw { to { stroke-dashoffset: 0; } }
+
+/* ---------- Con dấu "10 điểm" khi xong buổi ôn (Giấy Kẻ Ô) ---------- */
+.tv-overlay--stamp .tv-overlay__icon { width: 140px; height: 140px; filter: none; animation: tv-stamp 520ms var(--tv-ease-emphasized); }
+@keyframes tv-stamp { 0% { opacity: 0; transform: scale(1.8) rotate(-6deg); } 60% { opacity: 1; transform: scale(0.94); } 100% { transform: scale(1); } }
+
+/* Giảm chuyển động cho phần bổ sung */
+@media (prefers-reduced-motion: reduce) {
+  .tv-check, .tv-check path, .tv-overlay--stamp .tv-overlay__icon { animation: none !important; stroke-dashoffset: 0; }
+}
+[data-tv-motion="off"] .tv-check, [data-tv-motion="off"] .tv-check path,
+[data-tv-motion="off"] .tv-overlay--stamp .tv-overlay__icon { animation: none !important; stroke-dashoffset: 0; }

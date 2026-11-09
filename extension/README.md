@@ -20,6 +20,10 @@ Sửa code xong: bấm nút ↻ của extension trong `chrome://extensions`, r�
 - Đọc to bản dịch, sao chép bản dịch
 - Popup: chọn cặp ngôn ngữ, ô dịch nhanh (Ctrl+Enter), bật/tắt icon khi bôi đen
 - Tự đổi giao diện sáng/tối theo hệ điều hành
+- **Không có form đăng nhập riêng:** đăng nhập trên web app, extension tự kết nối theo (`src/web-bridge.js` đọc token của web app trên trang có `<meta name="transaver-web-app">`, mọi cổng localhost). Web đăng xuất thì extension cũng ngắt. Popup chỉ hiện trạng thái kết nối. Phiên lưu ở `chrome.storage.local['tvAuth']`; mọi lời gọi backend đi qua `background.js`
+- **Lưu từ:** nút Lưu trong khung dịch gửi từ, câu chứa từ (≤ 500 ký tự, `word_offset`/`word_length` theo UTF-16), tiêu đề + link trang (bỏ khi tắt "Lưu link" trong Cài đặt web) và bản dịch đang hiện. Bấm Lưu là lưu luôn với nghĩa = bản dịch đang hiện (không có bước chọn nghĩa); đổi nghĩa sau ở trang chi tiết từ trên web
+- **Gạch chân từ đã lưu** khi lướt web (CSS Custom Highlight API, không sửa DOM của trang). Dừng chuột trên từ khoảng 0,4 giây mới hiện thẻ "Bạn còn nhớ nghĩa?" + nút Hiện nghĩa; thẻ đứng yên tới khi bấm × (hoặc Esc / bấm ra ngoài thẻ). Bật/tắt trong popup
+- **Nhắc học:** `chrome.alarms` vào giờ nhắc (theo múi giờ trong Cài đặt), hôm nay chưa học thì hiện thông báo, bấm mở trang ôn tập. Cài đặt, lịch nhắc và danh sách từ làm mới khi mở popup và mỗi 6 giờ
 
 ## Cấu trúc
 
@@ -31,11 +35,16 @@ extension/
 ├── popup/               # Giao diện khi bấm icon trên thanh công cụ
 │   ├── popup.html
 │   ├── popup.css
-│   └── popup.js
+│   ├── popup.js
+│   └── account.js   # Trạng thái kết nối tài khoản
 └── src/
+    ├── config.js        # API_BASE_URL, WEB_APP_URL (sửa kèm host_permissions)
+    ├── context.js       # Lấy câu chứa từ được bôi đen
+    ├── web-bridge.js    # Lấy phiên đăng nhập từ web app
+    ├── highlight.js     # Gạch chân từ đã lưu + thẻ tự kiểm tra
     ├── icons.js         # Bộ icon thương hiệu dạng SVG (dùng chung)
     ├── languages.js     # Danh sách ngôn ngữ + đọc/ghi cài đặt (dùng chung)
-    ├── background.js    # Service worker: gọi API dịch, cache
+    ├── background.js    # Service worker: dịch, đăng nhập, lưu từ, đồng bộ, nhắc học
     └── content.js       # Icon + khung dịch trên trang (Shadow DOM)
 ```
 

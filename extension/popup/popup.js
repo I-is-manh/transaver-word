@@ -11,6 +11,7 @@
   const translateBtn = $('translate');
   const result = $('result');
   const showIcon = $('showIcon');
+  const highlight = $('highlight');
 
   swap.appendChild(TV.icon('swap', 20));
   TV.fillSelect(src, { includeAuto: true, compact: true });
@@ -23,6 +24,7 @@
     src.value = settings.sourceLang;
     tgt.value = settings.targetLang;
     showIcon.checked = settings.showIcon;
+    highlight.checked = settings.highlight !== false;
     swap.disabled = settings.sourceLang === TV.AUTO;
     swap.title =
       settings.sourceLang === TV.AUTO ? 'Chọn ngôn ngữ nguồn cụ thể để đổi chiều' : 'Đổi chiều dịch';
@@ -32,7 +34,7 @@
   async function save(patch) {
     settings = await TV.saveSettings(patch);
     render();
-    saved.textContent = `Đã lưu: ${TV.langName(settings.sourceLang)} → ${TV.langName(settings.targetLang)}`;
+    saved.textContent = `Đã lưu: ${TV.langName(settings.sourceLang)} sang ${TV.langName(settings.targetLang)}`;
     clearTimeout(savedTimer);
     savedTimer = setTimeout(() => (saved.textContent = ''), 2000);
   }
@@ -44,6 +46,10 @@
     save({ sourceLang: settings.targetLang, targetLang: settings.sourceLang });
   });
   showIcon.addEventListener('change', () => save({ showIcon: showIcon.checked }));
+  highlight.addEventListener('change', async () => {
+    settings = await TV.saveSettings({ highlight: highlight.checked });
+    render();
+  });
 
   input.addEventListener('input', () => {
     count.textContent = `${input.value.length}/${TV.MAX_TEXT_LENGTH}`;

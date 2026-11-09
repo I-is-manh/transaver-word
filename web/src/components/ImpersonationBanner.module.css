@@ -1,0 +1,29 @@
+.bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: var(--impersonation-bar);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-5);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 14px;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+.text strong {
+  font-weight: 700;
+}
+
+.back {
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  background: var(--surface-1);
+  color: var(--ink);
+  border-color: var(--on-accent);
+}

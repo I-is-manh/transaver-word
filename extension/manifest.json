@@ -3,8 +3,8 @@
   "name": "Transaver Word",
   "version": "0.1.0",
   "description": "Bôi đen văn bản trên bất kỳ trang web nào để dịch sang nhiều ngôn ngữ.",
-  "permissions": ["storage"],
-  "host_permissions": ["https://api.mymemory.translated.net/*"],
+  "permissions": ["storage", "alarms", "notifications"],
+  "host_permissions": ["https://api.mymemory.translated.net/*", "http://localhost:8000/*"],
   "background": {
     "service_worker": "src/background.js"
   },
@@ -27,9 +27,14 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["src/icons.js", "src/languages.js", "src/content.js"],
+      "js": ["src/icons.js", "src/languages.js", "src/appearance.js", "src/context.js", "src/highlight.js", "src/content.js"],
       "run_at": "document_idle",
       "all_frames": true
+    },
+    {
+      "matches": ["http://localhost/*", "http://127.0.0.1/*"],
+      "js": ["src/web-bridge.js"],
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [

@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Database Transaver Word v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Lexend:wght@500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+  /* Trang tài liệu: tóm tắt thay đổi, sơ đồ tương tác, chi tiết từng bảng (sinh từ cùng một dữ liệu với sơ đồ), truy vấn chính, việc cần quyết. */
+  :root {
+    --bg: #F7F9F8; --surface: #FFFFFF; --border: #D9E2DF; --text: #14201F; --muted: #56645F;
+    --line: #7D8C88; --hl: #0F6E66; --row-hl: #E3F3F0;
+    --brand: #0F6E66; --brand-tint: #E3F3F0; --accent-strong: #8A5A00; --accent-tint: #FDF1D6;
+    --danger: #B42318; --danger-tint: #FDECEA;
+    --g-account: #2F5BD3; --g-vocab: #0F8A4F; --g-review: #7C3AED; --g-motivation: #C2410C;
+    --g-support: #0E7490; --g-shared: #64748B; --g-phase2: #BE185D;
+    --font-display: "Lexend", "Be Vietnam Pro", system-ui, sans-serif;
+    --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0E1514; --surface: #162120; --border: #2A3836; --text: #E8EFEE; --muted: #9AAAA6;
+      --line: #5F716D; --hl: #3CC4B4; --row-hl: #12302D;
+      --brand: #3CC4B4; --brand-tint: #12302D; --accent-strong: #F7B73A; --accent-tint: #3A2E10;
+      --danger: #F97066; --danger-tint: #3A1A17;
+      --g-account: #8AA8F5; --g-vocab: #4ADE80; --g-review: #A78BFA; --g-motivation: #FB923C;
+      --g-support: #22D3EE; --g-shared: #94A3B8; --g-phase2: #F472B6;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0E1514; --surface: #162120; --border: #2A3836; --text: #E8EFEE; --muted: #9AAAA6;
+    --line: #5F716D; --hl: #3CC4B4; --row-hl: #12302D;
+    --brand: #3CC4B4; --brand-tint: #12302D; --accent-strong: #F7B73A; --accent-tint: #3A2E10;
+    --danger: #F97066; --danger-tint: #3A1A17;
+    --g-account: #8AA8F5; --g-vocab: #4ADE80; --g-review: #A78BFA; --g-motivation: #FB923C;
+    --g-support: #22D3EE; --g-shared: #94A3B8; --g-phase2: #F472B6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 var(--font-body); }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 16px 56px; }
+  h1 { font: 600 28px/1.25 var(--font-display); margin: 0 0 6px; text-wrap: balance; }
+  h2 { font: 600 21px/1.3 var(--font-display); margin: 44px 0 6px; scroll-margin-top: 16px; }
+  h3 { font: 600 16px/1.3 var(--font-display); margin: 0; }
+  .lead { color: var(--muted); margin: 0 0 18px; max-width: 75ch; }
+  .sec-sub { color: var(--muted); margin: 0 0 16px; max-width: 80ch; }
+  code, .mono { font-family: var(--font-mono); font-size: 0.86em; }
+  a { color: var(--brand); }
+
+  nav.toc { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+  nav.toc a {
+    text-decoration: none; color: var(--text); background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px 12px; font-size: 13.5px;
+  }
+  nav.toc a:hover { border-color: var(--brand); color: var(--brand); }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 18px 0 0; }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .stat b { display: block; font: 600 28px/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 13.5px; }
+
+  .box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; }
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+  .box ul { margin: 6px 0 0; padding-left: 18px; }
+  .box li { margin: 4px 0; }
+
+  .tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 8px 12px; border-top: 1px solid var(--border); }
+  thead th { border-top: 0; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: color-mix(in srgb, var(--border) 25%, var(--surface)); }
+  td.nowrap { white-space: nowrap; }
+
+  .pill { display: inline-block; font: 600 11.5px/1 var(--font-body); padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+  .pill.rm { background: var(--danger-tint); color: var(--danger); }
+  .pill.add { background: var(--brand-tint); color: var(--brand); }
+  .pill.chg { background: var(--accent-tint); color: var(--accent-strong); }
+  .pill.p2 { background: color-mix(in srgb, var(--g-phase2) 14%, var(--surface)); color: var(--g-phase2); }
+  .pill.mvp { background: var(--brand-tint); color: var(--brand); }
+  .pill.ai { background: color-mix(in srgb, var(--g-support) 14%, var(--surface)); color: var(--g-support); }
+  .pill.lv { background: color-mix(in srgb, var(--muted) 16%, var(--surface)); color: var(--muted); }
+
+  /* ---------- Sơ đồ ---------- */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin-bottom: 10px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); padding: 4px 10px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer;
+  }
+  .chip i { width: 10px; height: 10px; border-radius: 3px; background: var(--c); }
+  .chip[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+  .spacer { flex: 1; }
+  .ctrl { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13.5px; }
+  .btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; padding: 4px 10px; font: inherit; cursor: pointer; min-width: 34px; }
+  .btn:hover { border-color: var(--brand); }
+  .zoomval { min-width: 44px; text-align: center; font-variant-numeric: tabular-nums; }
+  .viewport {
+    position: relative; height: 76vh; min-height: 440px; overflow: auto; background: var(--bg);
+    background-image: radial-gradient(var(--border) 1px, transparent 1px); background-size: 22px 22px;
+    border: 1px solid var(--border); border-radius: 12px; cursor: grab;
+  }
+  .viewport.dragging { cursor: grabbing; user-select: none; }
+  .sizer { position: relative; }
+  .stage { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  svg.lines { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+  .card {
+    position: absolute; width: 280px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.06); overflow: hidden; cursor: pointer; transition: opacity .15s, box-shadow .15s;
+  }
+  .card.phase2 { border-style: dashed; border-color: var(--g-phase2); }
+  .card.ai { border-style: dashed; border-color: var(--g-support); }
+  .card .head {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 10px;
+    border-top: 4px solid var(--c); background: color-mix(in srgb, var(--c) 12%, var(--surface));
+    font: 600 13.5px var(--font-mono);
+  }
+  .card .tag { font: 600 11px var(--font-body); color: var(--c); white-space: nowrap; }
+  .row {
+    display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 6px; height: 24px; padding: 0 10px;
+    border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); font-size: 12.5px;
+  }
+  .row .k { font: 700 10px var(--font-body); color: var(--muted); }
+  .row .k.pk { color: var(--accent-strong); }
+  .row .k.fk { color: var(--hl); }
+  .row .n { font-family: var(--font-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .n.note { text-decoration: underline dotted var(--muted); text-underline-offset: 3px; }
+  .row .t { color: var(--muted); font-size: 11px; font-family: var(--font-mono); }
+  .row.p2 .n { color: var(--g-phase2); }
+  .row.new .n::after { content: "mới"; font: 600 9.5px var(--font-body); color: var(--brand); margin-left: 5px; vertical-align: 1px; }
+  .row.p2 .n::after { content: "tốt nếu có"; font: 600 9.5px var(--font-body); color: var(--g-phase2); margin-left: 5px; vertical-align: 1px; }
+  .row.hl { background: var(--row-hl); }
+  .rel path.edge { fill: none; stroke: var(--line); stroke-width: 1.4; }
+  .rel .mk { stroke: var(--line); stroke-width: 1.4; fill: var(--surface); }
+  .rel .label { display: none; font: 600 12px var(--font-body); fill: var(--hl); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; }
+  .rel.dashed path.edge { stroke-dasharray: 5 4; }
+  .rel.dashed:not(.hl) { display: none; }
+  .stage.focus .card:not(.hl) { opacity: .28; }
+  .stage.focus .rel:not(.hl) { opacity: .08; }
+  .rel.hl path.edge, .rel.hl .mk { stroke: var(--hl); stroke-width: 2.2; }
+  .rel.hl .label { display: block; }
+  .card.hl.self { box-shadow: 0 0 0 2px var(--hl), 0 6px 18px rgba(0,0,0,.12); }
+  .legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; font-size: 13.5px; color: var(--muted); }
+  .legend ul { list-style: none; padding: 0; margin: 6px 0 0; }
+  .legend li { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+  .legend h3 { color: var(--text); font-size: 14px; }
+
+  /* ---------- Chi tiết bảng ---------- */
+  .group-title { display: flex; align-items: center; gap: 10px; margin: 28px 0 10px; font: 600 15px var(--font-display); }
+  .group-title i { width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+  .tcards { display: grid; gap: 14px; }
+  .tcard { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--c); border-radius: 12px; overflow: hidden; scroll-margin-top: 16px; }
+  .tcard header { padding: 12px 16px 8px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  .tcard header h3 { font-family: var(--font-mono); font-size: 16px; }
+  .tcard .desc { padding: 0 16px 10px; color: var(--muted); margin: 0; max-width: 90ch; }
+  .tcard table { font-size: 13.5px; }
+  .tcard td:first-child { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; }
+  .tcard td.type { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .tcard tr.p2 td:first-child { color: var(--g-phase2); }
+  .tcard .foot { padding: 10px 16px 12px; border-top: 1px solid var(--border); font-size: 13.5px; display: grid; gap: 4px; }
+  .tcard .foot b { font-weight: 600; }
+  .tcard .foot .rmline { color: var(--muted); }
+  .keyb { font: 700 10.5px var(--font-body); color: var(--muted); margin-left: 6px; }
+  .keyb.pk { color: var(--accent-strong); }
+  .keyb.fk { color: var(--hl); }
+  pre {
+    background: color-mix(in srgb, var(--border) 25%, var(--surface)); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 14px; overflow-x: auto; font: 12.5px/1.55 var(--font-mono); margin: 8px 0 0;
+  }
+  .q { margin-bottom: 14px; }
+  .q h3 { margin-bottom: 4px; }
+  .q p { margin: 0; color: var(--muted); }
+  ol.flow { margin: 6px 0 0; padding-left: 20px; }
+  ol.flow li { margin: 5px 0; }
+  .rec { color: var(--brand); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Transaver Word: thiết kế lại database</h1>
+  <p class="lead">Thiết kế theo 32 chức năng đã chốt trong <a href="final-decision-features.md">final-decision-features.md</a>, thay cho <a href="database-design.md">database-design.md</a>. Dùng <b>PostgreSQL 16</b> và Laravel 12. Đăng nhập bằng email và mật khẩu (Google để sau), token qua Sanctum. Tạo <b>toàn bộ bảng ngay trong migration đầu</b>, kể cả bảng và cột cho chức năng "Tốt nếu có". Code của chức năng làm lúc nào cũng được, nhưng không phải sửa bảng nữa. Ngày soạn: 08/11/2026.</p>
+  <div class="callout" style="background:var(--accent-tint,#FDF1D6);border-radius:12px;padding:14px 18px;margin:16px 0">
+    <b>Cập nhật khi triển khai (08/11/2026).</b> Migration thật trong <code>backend/database/migrations</code> là nguồn đúng; chỗ nào khác trang này thì theo migration và <a href="api-contract.md">api-contract.md</a>:
+    <ul style="margin:6px 0 0;padding-left:20px">
+      <li>MySQL → <b>PostgreSQL 16</b>: cột JSON dùng <code>jsonb</code>; enum là <code>varchar</code> + check constraint; email unique theo <code>LOWER(email)</code>.</li>
+      <li><code>users</code>: thêm <code>password</code>, <code>onboarding_completed_at</code> (thay <code>onboarded_at</code>); <code>google_id</code> nullable để sau; bỏ <code>email_verified_at</code> và bảng <code>password_reset_tokens</code>.</li>
+      <li><code>word_contexts</code>: <code>word_offset</code>/<code>word_length</code> (thay <code>highlight_start/end</code>), <code>meaning</code> (thay <code>contextual_meaning</code>), <code>meaning_source</code> thêm giá trị <code>translation</code>.</li>
+      <li><code>dictionary_entries</code>: thêm <code>found</code> (boolean) để cache cả kết quả "không tìm thấy".</li>
+      <li><code>user_words.text</code> varchar(100), <code>meaning</code> varchar(500).</li>
+    </ul>
+  </div>
+
+  <nav class="toc">
+    <a href="#tom-tat">Tóm tắt</a>
+    <a href="#thay-doi">Thay đổi so với bản cũ</a>
+    <a href="#so-do">Sơ đồ</a>
+    <a href="#chi-tiet">Chi tiết bảng</a>
+    <a href="#luong">Luồng lưu từ và truy vấn</a>
+    <a href="#xoa">Xóa tài khoản</a>
+    <a href="#can-quyet">Cần bạn quyết</a>
+  </nav>
+
+  <div class="stats" id="tom-tat">
+    <div class="stat"><b>15</b><span>bảng tạo ngay (bản cũ: 21)</span></div>
+    <div class="stat"><b>10</b><span>bảng cho chức năng Phải có</span></div>
+    <div class="stat"><b>4</b><span>bảng cho chức năng Tốt nếu có, 1 bảng cache AI</span></div>
+    <div class="stat"><b>7</b><span>bảng bỏ hoặc gộp</span></div>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="box">
+      <h3>Năm quyết định định hình bản thiết kế</h3>
+      <ul>
+        <li><b>Không lưu offline, không đồng bộ xung đột.</b> Extension và web app gọi API trực tiếp. Vì vậy bỏ <code>uuid</code> ở hầu hết các bảng và các index phục vụ đồng bộ. Xóa mềm chỉ giữ ở <code>user_words</code> để có thùng rác.</li>
+        <li><b>FSRS tính ở server.</b> Web app chỉ gửi người dùng bấm nút nào. Lịch ôn do backend tính, nên người dùng không sửa được lịch bằng cách can thiệp vào trình duyệt.</li>
+        <li><b>Không ghi số liệu, không có nút góp ý.</b> Bỏ <code>events</code> và <code>feedback</code>, cùng các cột chỉ dùng để đo như <code>entry_point</code>, <code>opened_at</code>, <code>response_time_ms</code>.</li>
+        <li><b>Chỉ có deck, không có tag, không có deck tự động.</b> Bỏ <code>tags</code>, <code>user_word_tags</code>, <code>decks.auto_rule</code> và <code>word_contexts.page_domain</code>.</li>
+        <li><b>Tạo hết bảng ngay.</b> Bảng và cột của chức năng "Tốt nếu có" nằm luôn trong migration đầu, chỉ để trống cho tới khi làm chức năng đó.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Nguyên tắc vẫn giữ</h3>
+      <ul>
+        <li>Một từ một dòng trong <code>user_words</code>. Mỗi lần gặp lại từ đó thì thêm một câu vào <code>word_contexts</code>.</li>
+        <li><code>review_logs</code> chỉ thêm, không sửa. Trạng thái FSRS luôn tính lại được từ lịch sử này.</li>
+        <li>Ngày học tính theo múi giờ của người dùng.</li>
+        <li>Dữ liệu dùng chung (từ điển, cache AI) tách riêng khỏi dữ liệu của từng người.</li>
+        <li>Mọi bảng của người dùng đều <code>ON DELETE CASCADE</code> từ <code>users</code>, nên xóa tài khoản chỉ cần một lệnh.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ====================== THAY ĐỔI ====================== -->
+  <h2 id="thay-doi">Thay đổi so với bản cũ</h2>
+  <p class="sec-sub">Mỗi thay đổi đều dẫn về một quyết định trong file chốt chức năng.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Loại</th><th>Bảng hoặc cột</th><th>Lý do</th></tr></thead>
+      <tbody>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>events</code>, <code>feedback</code></td><td>Đã bỏ "Nút góp ý và ghi số liệu sử dụng".</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>ai_usage_daily</code></td><td>Đã bỏ "Kiểm soát chi phí AI". Nếu vẫn muốn giới hạn lượt gọi AI mỗi ngày (nên làm), dùng <code>RateLimiter</code> của Laravel trên Redis, không cần bảng.</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>translation_cache</code></td><td>Extension gọi MyMemory trực tiếp, không qua backend. Khi nào chuyển việc dịch sang backend thì thêm lại.</td></tr>
+        <tr><td><span class="pill chg">Gộp</span></td><td><code>streaks</code> → <code>user_progress</code></td><td>Một dòng cho mỗi người, chứa cả streak và tổng XP. Cấp độ tính ra từ XP nên không cần lưu.</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>uuid</code> ở mọi bảng, <code>deleted_at</code> ở mọi bảng trừ <code>user_words</code></td><td>Không lưu offline, không dùng thử khi chưa có tài khoản. Ngữ cảnh, deck, buổi ôn thì xóa cứng. Chống tạo trùng khi gửi lại request bằng <code>review_logs.client_uuid</code> và <code>word_contexts.sentence_hash</code>.</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>user_words.mastery_level</code>, <code>is_leech</code>, <code>first_saved_at</code>, trạng thái <code>suspended</code></td><td>Mức thuộc tính từ <code>stability</code>, từ khó tính từ <code>lapses</code>, ngày lưu đã có <code>created_at</code>. Không có chức năng nào dùng "tạm dừng".</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>tags</code>, <code>user_word_tags</code></td><td>Chỉ dùng deck để xếp từ. Hai thứ đều là quan hệ nhiều-nhiều nên bỏ tag cho giao diện quản lý từ gọn hơn.</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>decks.auto_rule</code>, <code>word_contexts.page_domain</code></td><td>Không có deck tự động.</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td><code>users.uuid</code>, <code>users.ui_locale</code></td><td>Không cần mã từ phía client. Giao diện chỉ có tiếng Việt.</td></tr>
+        <tr><td><span class="pill rm">Bỏ</span></td><td>Kênh <code>telegram</code>, <code>notification_logs.opened_at</code></td><td>Đã bỏ nhắc qua Telegram và không đo số liệu.</td></tr>
+        <tr><td><span class="pill chg">Giữ</span></td><td><code>user_words.deleted_at</code></td><td>Thùng rác và nút hoàn tác. Từ trong thùng rác tự xóa hẳn sau 30 ngày.</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>word_contexts.meaning_source</code></td><td>Nghĩa theo ngữ cảnh làm phương án A trước (người dùng chọn nghĩa trong từ điển), bật AI khi phát hành. Cột này ghi nghĩa đến từ đâu.</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>word_contexts.sentence_hash</code></td><td>Lưu cùng một câu hai lần (hoặc gửi lại request) không tạo dòng trùng.</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>notification_logs.for_date</code> + UNIQUE</td><td>Database tự chặn gửi hai email nhắc trong cùng một ngày.</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>users.role</code></td><td>Trang admin cơ bản (Tốt nếu có).</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>user_words.kind</code></td><td>Lưu cụm từ, thành ngữ (Tốt nếu có): lọc riêng và chọn dạng bài phù hợp.</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>review_sessions.mode</code>, <code>deck_id</code></td><td>Ôn theo deck, ôn riêng từ khó, ôn thêm ngoài lịch (Tốt nếu có).</td></tr>
+        <tr><td><span class="pill add">Thêm</span></td><td><code>xp_earned</code>, <code>total_xp</code>, <code>achievements.xp_reward</code></td><td>XP, cấp độ, huy hiệu (Tốt nếu có).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ====================== SƠ ĐỒ ====================== -->
+  <h2 id="so-do">Sơ đồ quan hệ</h2>
+  <p class="sec-sub">Di chuột hoặc bấm vào một bảng để làm nổi các quan hệ của nó. Kéo nền để di chuyển, giữ Ctrl và cuộn chuột để phóng to hoặc thu nhỏ. Viền nét đứt màu hồng là bảng của chức năng "Tốt nếu có", viền nét đứt màu xanh là bảng chỉ dùng khi bật AI. Tất cả đều tạo ngay.</p>
+  <div class="toolbar">
+    <div class="chips" id="chips"></div>
+    <div class="spacer"></div>
+    <label class="ctrl"><input type="checkbox" id="mvpOnly"> Chỉ chức năng Phải có</label>
+    <label class="ctrl"><input type="checkbox" id="keysOnly"> Chỉ cột khóa</label>
+    <div class="ctrl">
+      <button class="btn" id="zout" title="Thu nhỏ">−</button>
+      <span class="zoomval" id="zval">100%</span>
+      <button class="btn" id="zin" title="Phóng to">+</button>
+      <button class="btn" id="zfit">Vừa khung</button>
+    </div>
+  </div>
+  <div class="viewport" id="viewport">
+    <div class="sizer" id="sizer">
+      <div class="stage" id="stage"><svg class="lines" id="lines"></svg></div>
+    </div>
+  </div>
+  <div class="legend">
+    <div>
+      <h3>Ký hiệu đầu đường nối</h3>
+      <ul>
+        <li><svg width="40" height="16"><line x1="0" y1="8" x2="40" y2="8" stroke="currentColor"/><line x1="26" y1="2" x2="26" y2="14" stroke="currentColor"/><line x1="31" y1="2" x2="31" y2="14" stroke="currentColor"/></svg> đúng một (bảng cha)</li>
+        <li><svg width="40" height="16"><line x1="0" y1="8" x2="40" y2="8" stroke="currentColor"/><line x1="31" y1="2" x2="31" y2="14" stroke="currentColor"/><circle cx="22" cy="8" r="4" fill="var(--surface)" stroke="currentColor"/></svg> không hoặc một (khóa ngoại có thể NULL)</li>
+        <li><svg width="40" height="16"><line x1="0" y1="8" x2="40" y2="8" stroke="currentColor"/><line x1="40" y1="2" x2="28" y2="8" stroke="currentColor"/><line x1="40" y1="14" x2="28" y2="8" stroke="currentColor"/><circle cx="20" cy="8" r="4" fill="var(--surface)" stroke="currentColor"/></svg> không hoặc nhiều (bảng con)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Luồng chính</h3>
+      <ul>
+        <li><code>users</code> → <code>user_words</code>: kho từ của mỗi người</li>
+        <li><code>user_words</code> → <code>word_contexts</code>: một từ, nhiều câu đã gặp</li>
+        <li><code>user_words</code> → <code>review_logs</code>: mỗi lần trả lời một thẻ</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Ghi chú</h3>
+      <ul>
+        <li>Chữ "mới" cạnh cột: không có trong bản cũ.</li>
+        <li>Cột chữ hồng ghi "tốt nếu có": tạo ngay, dùng khi làm chức năng đó.</li>
+        <li>Đường nét đứt (chỉ hiện khi chọn bảng): <code>user_id</code> lặp lại để truy vấn nhanh.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ====================== CHI TIẾT ====================== -->
+  <h2 id="chi-tiet">Chi tiết các bảng</h2>
+  <p class="sec-sub">Mọi bảng có <code>id BIGINT UNSIGNED AUTO_INCREMENT</code> làm khóa chính (trừ khi ghi khác). <code>created_at</code>, <code>updated_at</code> là <code>TIMESTAMP</code> theo UTC. Ngoài các bảng dưới đây, Laravel tự tạo <code>personal_access_tokens</code> (Sanctum), <code>sessions</code>, <code>jobs</code> (hàng đợi gửi email), <code>cache</code>.</p>
+  <div id="details"></div>
+
+  <h3 style="margin-top:22px">Ví dụ <code>user_settings.settings</code></h3>
+  <p class="sec-sub" style="margin-top:4px">Mỗi cài đặt lưu kèm nguồn gốc. Cài đặt nào có <code>source</code> là <code>user</code> thì app không tự đổi nữa. Các khóa đánh dấu <code>// tốt nếu có</code> có sẵn giá trị mặc định ngay từ đầu.</p>
+  <pre>{
+  "onboarding":        { "goal": "exam", "level": "intermediate", "daily_minutes": 10 },
+  "daily_new_words":   { "value": 7,                   "source": "onboarding" },
+  "reminder_time":     { "value": "21:30",             "source": "user" },
+  "reminder_channels": { "value": ["browser", "email"], "source": "onboarding" },
+  "exercise_types":    { "value": ["flashcard", "mcq", "cloze"], "source": "onboarding" },
+  "save_page_url":     { "value": true,                "source": "default" },
+
+  "daily_review_limit": { "value": 150,  "source": "default" },     // tốt nếu có: chống dồn ứ
+  "desired_retention":  { "value": 0.9,  "source": "onboarding" },  // tốt nếu có: tùy chỉnh mức ghi nhớ
+  "card_display":       { "value": { "phonetic": true, "english_definition": false }, "source": "default" },  // tốt nếu có
+  "weekly_report":      { "value": true, "source": "default" }      // tốt nếu có: báo cáo tuần
+}</pre>
+
+  <!-- ====================== LUỒNG ====================== -->
+  <h2 id="luong">Luồng lưu từ và các truy vấn chính</h2>
+  <div class="grid2">
+    <div class="box">
+      <h3>Khi bấm "Lưu" trên extension</h3>
+      <ol class="flow">
+        <li>Extension gửi <code>POST /api/words</code> gồm từ, cặp ngôn ngữ, câu, vị trí của từ trong câu, tiêu đề và link trang.</li>
+        <li>Backend chuẩn hóa từ, tìm trong <code>dictionary_entries</code>. Chưa có thì gọi Free Dictionary API rồi lưu lại.</li>
+        <li>Tìm <code>user_words</code> theo <code>(user_id, source_lang, target_lang, normalized_text)</code>. Chưa có thì tạo mới với <code>fsrs_state = 0</code>.</li>
+        <li>Thêm <code>word_contexts</code>. Nếu trùng <code>sentence_hash</code> thì bỏ qua, nên bấm Lưu hai lần hay gửi lại request đều không tạo trùng.</li>
+        <li>Tăng <code>daily_activity.words_saved</code> của ngày hôm nay theo múi giờ người dùng.</li>
+        <li>Trả về danh sách nghĩa trong từ điển để người dùng chọn (phương án A). Khi bật AI thì trả luôn nghĩa theo ngữ cảnh.</li>
+      </ol>
+    </div>
+    <div class="box">
+      <h3>Khi trả lời một thẻ trên web app</h3>
+      <ol class="flow">
+        <li>Lúc lấy thẻ, server trả kèm khoảng cách tới lần ôn tiếp cho từng nút (Quên 1 phút, Khó 2 ngày, Nhớ 4 ngày, Dễ 9 ngày) để hiện trên nút.</li>
+        <li>Web app gửi <code>client_uuid</code>, <code>user_word_id</code>, <code>rating</code>, dạng bài, đáp án, câu đã dùng. Không gửi trạng thái FSRS.</li>
+        <li>Server khóa dòng <code>user_words</code> (<code>SELECT … FOR UPDATE</code>), tính trạng thái mới bằng thư viện FSRS cho PHP, thêm <code>review_logs</code> (trùng <code>client_uuid</code> thì bỏ qua) và cập nhật các cột FSRS. Tất cả trong một transaction. <code>reviewed_at</code> lấy giờ server.</li>
+        <li>Cập nhật <code>daily_activity</code> (số lượt ôn, từ mới, đạt mục tiêu chưa) và <code>review_sessions</code>.</li>
+        <li>Lần ôn đầu tiên trong ngày: cập nhật streak trong <code>user_progress</code>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="box" style="margin-top:14px">
+    <div class="q">
+      <h3>Từ cần ôn hôm nay</h3>
+      <pre>SELECT * FROM user_words
+WHERE user_id = ? AND status = 'learning'
+  AND due_at &lt;= ?          -- cuối ngày hôm nay theo múi giờ người dùng
+ORDER BY due_at
+LIMIT ?;                    -- daily_review_limit (chống dồn ứ)</pre>
+      <p style="margin-top:6px">Dùng index <code>(user_id, status, due_at)</code>.</p>
+    </div>
+    <div class="q">
+      <h3>Từ mới cho buổi ôn</h3>
+      <p><code>fsrs_state = 0</code>, sắp xếp theo <code>created_at</code>, lấy tối đa <code>daily_new_words</code> trừ <code>daily_activity.new_words_learned</code> của hôm nay. Chống dồn ứ: nếu số từ đến hạn vượt ngưỡng thì tạm ngưng đưa từ mới vào (chống dồn ứ).</p>
+    </div>
+    <div class="q">
+      <h3>Câu cho bài điền chỗ trống</h3>
+      <p>Chọn một <code>word_contexts</code> của từ, ưu tiên câu ít được dùng gần đây (so với <code>review_logs.word_context_id</code>). Từ có <code>stability &lt; 7</code> thì gợi ý chữ cái đầu, từ đã khá thuộc thì phải gõ đủ.</p>
+    </div>
+    <div class="q">
+      <h3>Thống kê "đã thuộc"</h3>
+      <p><code>fsrs_state = 2</code> và <code>stability &gt;= 21</code>. Các ngưỡng (7, 21, số lần quên của từ khó) để trong <code>config/learning.php</code> để chỉnh sau.</p>
+    </div>
+    <div class="q">
+      <h3>Thùng rác</h3>
+      <p>Mọi truy vấn trên <code>user_words</code> có thêm <code>deleted_at IS NULL</code> (Laravel <code>SoftDeletes</code> tự thêm). Xóa từ: đặt <code>deleted_at</code>, hiện nút "Hoàn tác". Trang thùng rác: <code>WHERE deleted_at IS NOT NULL</code>, có nút khôi phục và xóa hẳn. Mỗi ngày một job xóa hẳn các từ đã vào thùng rác quá 30 ngày; ngữ cảnh, lịch sử ôn và liên kết deck mất theo nhờ <code>ON DELETE CASCADE</code>. Lưu lại một từ đang nằm trong thùng rác thì khôi phục dòng cũ (đặt <code>deleted_at = NULL</code>) và thêm câu mới, vì khóa UNIQUE vẫn tính cả dòng đã xóa mềm. Lịch FSRS cũ vẫn còn nguyên.</p>
+    </div>
+    <div class="q">
+      <h3>Từ khó</h3>
+      <p><code>status = 'learning' AND lapses &gt;= 3</code>, sắp xếp theo <code>lapses</code> giảm dần. Dùng index <code>(user_id, lapses)</code>.</p>
+    </div>
+    <div class="q">
+      <h3>Ôn theo deck</h3>
+      <p>Như truy vấn "cần ôn hôm nay" nhưng <code>JOIN deck_words</code>. FSRS gắn với từ chứ không gắn với deck: một từ nằm ở hai deck thì ôn ở deck nào cũng cập nhật cùng một lịch.</p>
+    </div>
+    <div class="q">
+      <h3>Có cần gửi email nhắc không</h3>
+      <p>Hôm nay chưa có dòng <code>daily_activity</code> với <code>reviews_count &gt; 0</code>. Thêm <code>notification_logs</code> với <code>for_date</code> là hôm nay: nếu trùng khóa UNIQUE nghĩa là đã gửi rồi. Thông báo trình duyệt do extension tự hẹn giờ bằng <code>chrome.alarms</code>, trước khi hiện thì gọi API hỏi hôm nay đã học chưa. Thông báo trình duyệt không cần ghi log.</p>
+    </div>
+    <div class="q" style="margin-bottom:0">
+      <h3>Highlight từ đã lưu</h3>
+      <p>Extension tải <code>normalized_text, meaning</code> của các từ đang học, lưu vào <code>chrome.storage.local</code> và tải lại sau mỗi lần lưu từ hoặc vài giờ một lần. Vài nghìn từ chỉ vài chục KB nên không cần đồng bộ từng phần.</p>
+    </div>
+  </div>
+
+  <!-- ====================== XÓA TÀI KHOẢN ====================== -->
+  <h2 id="xoa">Xóa tài khoản</h2>
+  <div class="box">
+    <p style="margin:0">Không còn <code>events</code> và <code>feedback</code> nên không phải ẩn danh hóa dữ liệu nào. Mọi bảng của người dùng có khóa ngoại <code>ON DELETE CASCADE</code>, nên chỉ cần thu hồi token rồi <code>DELETE FROM users WHERE id = ?</code>. Dữ liệu của người đó trong <code>user_settings</code>, <code>user_words</code>, <code>word_contexts</code>, <code>review_logs</code>, <code>review_sessions</code>, <code>daily_activity</code>, <code>user_progress</code>, <code>notification_logs</code>, <code>decks</code>, <code>deck_words</code>, <code>user_achievements</code> sẽ bị xóa theo. Bảng dùng chung (<code>dictionary_entries</code>, <code>context_meaning_cache</code>) không chứa thông tin cá nhân nên giữ nguyên. Riêng câu của người dùng trong <code>context_meaning_cache</code> chỉ nằm ở dạng đã băm trong <code>cache_key</code>.</p>
+  </div>
+
+  <!-- ====================== CẦN QUYẾT ====================== -->
+  <h2 id="can-quyet">Cần bạn quyết</h2>
+  <p class="sec-sub">Bản thiết kế đã chọn sẵn một phương án cho mỗi câu (ghi ở cột "Đang chọn"). Đổi phương án nào thì chỉ cần sửa vài cột.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Câu hỏi</th><th>Đang chọn</th><th>Nếu chọn khác</th></tr></thead>
+      <tbody>
+        <tr><td>Xóa từ là xóa hẳn?</td><td class="rec">Đã chốt: có thùng rác và hoàn tác (<code>user_words.deleted_at</code>), tự xóa hẳn sau 30 ngày</td><td>Số ngày giữ trong thùng rác để trong config.</td></tr>
+        <tr><td>FSRS tính ở đâu?</td><td class="rec">Đã chốt: tính ở server (PHP)</td><td>Thư viện FSRS cho PHP hiện ít người dùng (<code>devdch/fsrs</code>, <code>scottlaurent/fsrs</code>). Cách an toàn: dùng một thư viện hoặc tự port phần lõi của <code>ts-fsrs</code> (khoảng vài trăm dòng), rồi viết test so kết quả với <code>ts-fsrs</code> trên cùng một chuỗi lần ôn.</td></tr>
+        <tr><td>Extension mất mạng khi bấm Lưu?</td><td class="rec">Báo lỗi, người dùng bấm lại</td><td>Muốn tự gửi lại khi có mạng thì xếp hàng trong <code>chrome.storage.local</code>. Server đã chống trùng bằng <code>sentence_hash</code> nên schema không đổi.</td></tr>
+        <tr><td>Thẻ đóng băng có được bằng cách nào?</td><td class="rec">Được 1 thẻ sau mỗi 7 ngày liên tiếp, giữ tối đa 2 thẻ</td><td>Chỉ là luật trong code, <code>freezes_available</code> dùng được cho mọi luật.</td></tr>
+        <tr><td>Có giới hạn lượt gọi AI mỗi ngày không?</td><td class="rec">Có, dùng <code>RateLimiter</code> trên Redis, không cần bảng</td><td>Muốn xem chi phí theo từng người thì thêm lại <code>ai_usage_daily</code>.</td></tr>
+        <tr><td>Bản đầu chỉ cho tiếng Anh?</td><td class="rec">Schema hỗ trợ mọi cặp ngôn ngữ</td><td>Free Dictionary API chỉ có tiếng Anh. Ngôn ngữ khác sẽ không có phiên âm và nghĩa từ điển.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sec-sub" style="margin-top:14px">Các chức năng "để sau" không cần bảng ngay. Khi làm thì thêm như sau: ảnh minh họa thêm cột <code>user_words.image_url</code>; chia sẻ bộ từ thêm cột <code>decks.share_token</code>; AI chấm câu dùng <code>review_logs</code> với <code>exercise_type = 'sentence'</code>; học cùng bạn bè và Premium sẽ cần bảng riêng.</p>
+</div>
+
+<script>
+// ---------- Nhóm ----------
+const GROUPS = {
+  account:    { label: 'Tài khoản',              color: '--g-account' },
+  vocab:      { label: 'Từ vựng',                color: '--g-vocab' },
+  review:     { label: 'Ôn tập',                 color: '--g-review' },
+  motivation: { label: 'Streak, thống kê',       color: '--g-motivation' },
+  support:    { label: 'Nhắc học',               color: '--g-support' },
+  shared:     { label: 'Dùng chung',             color: '--g-shared' },
+  phase2:     { label: 'Bộ từ, huy hiệu', color: '--g-phase2' },
+};
+const PHASE = { mvp: ['mvp', 'Phải có'], ai: ['ai', 'Dùng khi bật AI'], p2: ['p2', 'Tốt nếu có'], lv: ['lv', 'Laravel'] };
+
+// ---------- Bảng ----------
+// cột: [tên, kiểu, khóa, ghi chú, cờ]   cờ: 'new' = mới so với bản cũ, 'p2' = dùng cho chức năng Tốt nếu có (vẫn tạo ngay)
+const TABLES = {
+  users: { g: 'account', phase: 'mvp',
+    desc: 'Tài khoản. Chỉ đăng nhập bằng Google.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['email', 'VARCHAR(255)', 'UK'],
+      ['name', 'VARCHAR(255)', ''],
+      ['avatar_url', 'VARCHAR(500) NULL', ''],
+      ['google_id', 'VARCHAR(64)', 'UK', 'Bắt buộc, vì Google là cách đăng nhập duy nhất'],
+      ['timezone', 'VARCHAR(64)', '', 'Ví dụ Asia/Ho_Chi_Minh, lấy từ trình duyệt. Dùng để tính ngày học, streak, giờ nhắc'],
+      ['status', "ENUM('active','banned')", '', 'Admin khóa tài khoản'],
+      ['role', "ENUM('user','admin')", '', 'Trang admin cơ bản', 'p2'],
+      ['onboarded_at', 'TIMESTAMP NULL', '', 'NULL = chưa làm onboarding'],
+      ['last_active_at', 'TIMESTAMP NULL', '', 'Hiện trong trang admin'],
+      ['created_at, updated_at', 'TIMESTAMP', ''],
+    ],
+    idx: [],
+    removed: 'uuid, ui_locale',
+  },
+  user_settings: { g: 'account', phase: 'mvp',
+    desc: 'Một người một dòng. Cài đặt lưu dạng JSON để thêm cài đặt mới mà không phải sửa bảng (xem ví dụ bên dưới).',
+    cols: [
+      ['user_id', 'BIGINT', 'PK FK'],
+      ['settings', 'JSON', '', 'Mỗi cài đặt có value và source (default / onboarding / user)'],
+      ['schema_version', 'SMALLINT', '', 'Tăng khi đổi cấu trúc JSON'],
+      ['updated_at', 'TIMESTAMP', ''],
+    ],
+    idx: [],
+  },
+  user_progress: { g: 'motivation', phase: 'mvp',
+    desc: 'Gộp từ bảng streaks cũ. Bảng tóm tắt để trang chủ đọc nhanh. Cấp độ tính ra từ total_xp nên không lưu.',
+    cols: [
+      ['user_id', 'BIGINT', 'PK FK'],
+      ['current_streak', 'INT', ''],
+      ['longest_streak', 'INT', ''],
+      ['last_active_date', 'DATE NULL', '', 'Ngày theo múi giờ của người dùng'],
+      ['freezes_available', 'TINYINT', '', 'Số thẻ đóng băng đang có, tối đa 2'],
+      ['total_xp', 'INT', '', 'XP, cấp độ', 'p2'],
+      ['updated_at', 'TIMESTAMP', ''],
+    ],
+    idx: [],
+    removed: 'bảng streaks (đổi tên, thêm total_xp)',
+  },
+  daily_activity: { g: 'motivation', phase: 'mvp',
+    desc: 'Một dòng cho mỗi người mỗi ngày có hoạt động. Là nguồn dữ liệu cho streak, mục tiêu ngày, thống kê, heatmap và báo cáo tuần.',
+    cols: [
+      ['user_id', 'BIGINT', 'PK FK'],
+      ['activity_date', 'DATE', 'PK', 'Ngày theo múi giờ của người dùng'],
+      ['reviews_count', 'INT', ''],
+      ['new_words_learned', 'INT', ''],
+      ['words_saved', 'INT', '', 'Số từ lưu qua extension'],
+      ['study_seconds', 'INT', ''],
+      ['goal_met', 'BOOLEAN', '', 'Đạt mục tiêu ngày chưa'],
+      ['freeze_used', 'BOOLEAN', '', 'Ngày này được giữ streak bằng thẻ đóng băng'],
+      ['xp_earned', 'INT', '', 'XP, báo cáo tuần', 'p2'],
+    ],
+    idx: ['PRIMARY KEY (user_id, activity_date)'],
+  },
+  notification_logs: { g: 'support', phase: 'mvp',
+    desc: 'Nhật ký email đã gửi. Dùng để không gửi trùng trong một ngày. Thông báo trình duyệt không ghi vào đây.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['user_id', 'BIGINT', 'FK'],
+      ['type', "ENUM('daily_reminder','weekly_report')", '', 'weekly_report: báo cáo tuần'],
+      ['for_date', 'DATE', '', 'Ngày theo múi giờ người dùng. Báo cáo tuần thì là ngày đầu tuần', 'new'],
+      ['status', "ENUM('sent','failed','skipped')", '', 'skipped = không gửi vì hôm nay đã học'],
+      ['error', 'VARCHAR(500) NULL', '', 'Lý do khi failed', 'new'],
+      ['sent_at', 'TIMESTAMP', ''],
+    ],
+    idx: ['UNIQUE (user_id, type, for_date)'],
+    removed: 'channel, opened_at',
+  },
+  user_words: { g: 'vocab', phase: 'mvp',
+    desc: 'Bảng trung tâm. Mỗi dòng là một từ trong kho của một người, kèm trạng thái FSRS. Một từ chỉ có một dòng dù được lưu ở bao nhiêu trang. Xóa từ là xóa mềm: từ vào thùng rác, khôi phục được, sau 30 ngày mới xóa hẳn cùng ngữ cảnh và lịch sử ôn.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['user_id', 'BIGINT', 'FK'],
+      ['dictionary_entry_id', 'BIGINT NULL', 'FK', 'NULL nếu từ điển không có (cụm từ, tên riêng). ON DELETE SET NULL'],
+      ['source_lang', 'VARCHAR(10)', 'UK', 'Ngôn ngữ của từ'],
+      ['target_lang', 'VARCHAR(10)', 'UK', 'Ngôn ngữ của nghĩa'],
+      ['text', 'VARCHAR(255)', '', 'Như người dùng bôi đen'],
+      ['normalized_text', 'VARCHAR(255)', 'UK', 'Chữ thường, bỏ khoảng trắng thừa. Dùng để chống trùng'],
+      ['kind', "ENUM('word','phrase')", '', 'Lưu cụm từ, thành ngữ', 'p2'],
+      ['meaning', 'TEXT', '', 'Nghĩa chính trên thẻ. Lần đầu lấy từ nghĩa theo ngữ cảnh, người dùng sửa được'],
+      ['note', 'TEXT NULL', '', 'Ghi chú của người dùng'],
+      ['status', "ENUM('learning','known')", '', 'known = đã biết, không đưa vào lịch ôn nhưng vẫn giữ trong kho'],
+      ['fsrs_state', 'TINYINT', '', '0 New, 1 Learning, 2 Review, 3 Relearning'],
+      ['due_at', 'TIMESTAMP NULL', '', 'NULL = từ mới chưa học'],
+      ['stability', 'DOUBLE', '', 'Dùng để tính mức thuộc và độ khó của bài điền chỗ trống'],
+      ['difficulty', 'DOUBLE', ''],
+      ['elapsed_days', 'INT', ''],
+      ['scheduled_days', 'INT', ''],
+      ['reps', 'INT', '', 'Tổng số lần ôn'],
+      ['lapses', 'INT', '', 'Số lần quên. Từ khó = lapses ≥ 3'],
+      ['last_review_at', 'TIMESTAMP NULL', ''],
+      ['created_at, updated_at', 'TIMESTAMP', '', 'created_at = lúc lưu lần đầu'],
+      ['deleted_at', 'TIMESTAMP NULL', '', 'Khác NULL = đang trong thùng rác'],
+    ],
+    idx: [
+      'UNIQUE (user_id, source_lang, target_lang, normalized_text): chống lưu trùng, tính cả dòng trong thùng rác',
+      '(user_id, status, due_at): từ cần ôn hôm nay',
+      '(user_id, created_at): danh sách từ mới nhất, từ mới cho buổi ôn',
+      '(user_id, lapses): từ khó',
+      '(deleted_at): job dọn thùng rác',
+      'FULLTEXT hoặc LIKE trên (text, meaning): ô tìm kiếm. Ban đầu dùng LIKE là đủ',
+    ],
+    removed: 'uuid, mastery_level, is_leech, first_saved_at, trạng thái suspended',
+  },
+  word_contexts: { g: 'vocab', phase: 'mvp',
+    desc: 'Các câu người dùng đã gặp từ đó. Đây là dữ liệu cho bài điền chỗ trống bằng câu gốc, điểm khác biệt chính của sản phẩm.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['user_word_id', 'BIGINT', 'FK'],
+      ['user_id', 'BIGINT', 'FK', 'Lặp lại để truy vấn theo người nhanh hơn'],
+      ['sentence', 'VARCHAR(500)', '', 'Câu chứa từ, cắt tối đa 500 ký tự'],
+      ['sentence_hash', 'CHAR(64)', 'UK', 'SHA-256 của câu đã chuẩn hóa. Lưu lại cùng câu thì bỏ qua', 'new'],
+      ['highlight_start', 'SMALLINT', '', 'Vị trí ký tự bắt đầu của từ trong câu'],
+      ['highlight_end', 'SMALLINT', '', 'Vị trí kết thúc. Dùng để che đúng chỗ, kể cả khi từ đã chia (issues, issued)'],
+      ['contextual_meaning', 'TEXT NULL', '', 'Nghĩa của từ trong câu này'],
+      ['meaning_source', "ENUM('dictionary','ai','user')", '', 'dictionary = người dùng chọn trong từ điển (phương án A), ai = phương án C, user = tự gõ', 'new'],
+      ['page_title', 'VARCHAR(500) NULL', ''],
+      ['page_url', 'TEXT NULL', '', 'NULL nếu người dùng tắt lưu link (save_page_url)'],
+      ['created_at, updated_at', 'TIMESTAMP', '', 'created_at = lúc bấm Lưu'],
+    ],
+    idx: ['UNIQUE (user_word_id, sentence_hash)', '(user_id)'],
+    removed: 'uuid, page_domain, saved_at, deleted_at',
+  },
+  dictionary_entries: { g: 'shared', phase: 'mvp',
+    desc: 'Dùng chung cho mọi người. Lấy từ Free Dictionary API một lần rồi dùng lại. Cung cấp phiên âm, file phát âm và danh sách nghĩa để người dùng chọn.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['lang', 'VARCHAR(10)', 'UK'],
+      ['text', 'VARCHAR(255)', ''],
+      ['normalized_text', 'VARCHAR(255)', 'UK'],
+      ['phonetic', 'VARCHAR(255) NULL', ''],
+      ['audio_url', 'VARCHAR(500) NULL', '', 'NULL thì đọc bằng giọng trình duyệt'],
+      ['parts_of_speech', 'JSON NULL', '', '["noun", "verb"]'],
+      ['definitions', 'JSON NULL', '', 'Danh sách nghĩa từ điển'],
+      ['provider', 'VARCHAR(50)', ''],
+      ['fetched_at', 'TIMESTAMP', '', 'Để làm mới dữ liệu cũ'],
+    ],
+    idx: ['UNIQUE (lang, normalized_text)'],
+  },
+  context_meaning_cache: { g: 'shared', phase: 'ai',
+    desc: 'Chỉ cần khi bật AI (phương án C). Cùng một từ trong cùng một câu thì không gọi AI lần hai. Chi phí gần như bằng không mà tránh được lặp lời gọi.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['cache_key', 'CHAR(64)', 'UK', 'SHA-256 của lang + từ + câu đã chuẩn hóa + target_lang'],
+      ['meaning', 'TEXT', ''],
+      ['model', 'VARCHAR(50)', '', 'Đổi model thì biết bản ghi nào cần làm mới'],
+      ['created_at', 'TIMESTAMP', ''],
+    ],
+    idx: [],
+  },
+  review_sessions: { g: 'review', phase: 'mvp',
+    desc: 'Mỗi lần mở buổi ôn là một dòng. Dùng cho màn hình kết thúc buổi ôn.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['user_id', 'BIGINT', 'FK'],
+      ['mode', "ENUM('daily','extra','hard','deck')", '', 'daily = theo lịch (Phải có). extra = ôn thêm, hard = từ khó, deck = theo deck (Tốt nếu có)', 'new'],
+      ['deck_id', 'BIGINT NULL', 'FK', 'Ôn theo deck. ON DELETE SET NULL', 'p2'],
+      ['started_at', 'TIMESTAMP', ''],
+      ['ended_at', 'TIMESTAMP NULL', '', 'NULL = bỏ dở'],
+      ['cards_reviewed', 'INT', ''],
+      ['new_cards', 'INT', ''],
+      ['correct_count', 'INT', ''],
+      ['duration_seconds', 'INT', ''],
+      ['xp_earned', 'INT', '', 'Hiện ở màn hình kết thúc', 'p2'],
+    ],
+    idx: ['(user_id, started_at)'],
+    removed: 'uuid, entry_point, client',
+  },
+  review_logs: { g: 'review', phase: 'mvp',
+    desc: 'Mỗi lần trả lời một thẻ là một dòng, do server ghi sau khi tự tính FSRS. Chỉ thêm, không sửa. Đây là nguồn dữ liệu gốc của FSRS. Bảng tăng nhanh nhất, khoảng 70 dòng mỗi người mỗi ngày.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['client_uuid', 'CHAR(36)', 'UK', 'Web app sinh. Mạng chập chờn gửi lại thì không bị tính hai lần'],
+      ['user_id', 'BIGINT', 'FK', 'Lặp lại để truy vấn nhanh'],
+      ['user_word_id', 'BIGINT', 'FK'],
+      ['session_id', 'BIGINT NULL', 'FK'],
+      ['word_context_id', 'BIGINT NULL', 'FK', 'Câu dùng trong bài điền chỗ trống. ON DELETE SET NULL'],
+      ['exercise_type', 'VARCHAR(20)', '', 'flashcard, mcq, cloze (Phải có); listening, dictation (Tốt nếu có)'],
+      ['rating', 'TINYINT', '', '1 Again, 2 Hard, 3 Good, 4 Easy'],
+      ['is_correct', 'BOOLEAN NULL', '', 'Với trắc nghiệm và bài gõ chữ'],
+      ['answer', 'VARCHAR(255) NULL', '', 'Đáp án người dùng chọn hoặc gõ'],
+      ['state_before', 'TINYINT', ''],
+      ['elapsed_days', 'INT', ''],
+      ['scheduled_days', 'INT', ''],
+      ['stability_after', 'DOUBLE', ''],
+      ['difficulty_after', 'DOUBLE', ''],
+      ['reviewed_at', 'TIMESTAMP(3)', '', 'Giờ server, có mili giây'],
+    ],
+    idx: ['(user_word_id, reviewed_at)', '(user_id, reviewed_at)'],
+    removed: 'uuid (thay bằng client_uuid), due_before, response_time_ms, client, created_at',
+  },
+  decks: { g: 'phase2', phase: 'p2',
+    desc: 'Bộ từ người dùng tự tạo trên web app. Là cách duy nhất để xếp nhóm từ (không có tag). Không có deck tự động: extension lưu từ như bình thường, từ mới không thuộc deck nào. Xóa deck chỉ xóa liên kết, các từ vẫn còn.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['user_id', 'BIGINT', 'FK'],
+      ['name', 'VARCHAR(100)', '', 'UNIQUE (user_id, name)'],
+      ['color', 'VARCHAR(7) NULL', ''],
+      ['created_at, updated_at', 'TIMESTAMP', ''],
+    ],
+    idx: ['UNIQUE (user_id, name)'],
+    removed: 'uuid, auto_rule, deleted_at',
+  },
+  deck_words: { g: 'phase2', phase: 'p2',
+    desc: 'Một từ có thể nằm ở nhiều deck. Từ mới lưu không thuộc deck nào.',
+    cols: [
+      ['deck_id', 'BIGINT', 'PK FK'],
+      ['user_word_id', 'BIGINT', 'PK FK'],
+      ['added_at', 'TIMESTAMP', ''],
+    ],
+    idx: ['PRIMARY KEY (deck_id, user_word_id)', '(user_word_id)'],
+  },
+  achievements: { g: 'phase2', phase: 'p2',
+    desc: 'Danh mục huy hiệu, nạp bằng seeder. Luật tính nằm trong criteria và được kiểm tra sau mỗi buổi ôn.',
+    cols: [
+      ['id', 'BIGINT', 'PK'],
+      ['code', 'VARCHAR(50)', 'UK', 'Ví dụ streak_7, words_100'],
+      ['name', 'VARCHAR(100)', ''],
+      ['description', 'VARCHAR(255)', ''],
+      ['icon', 'VARCHAR(50)', ''],
+      ['criteria', 'JSON', '', '{"type": "streak", "gte": 7}'],
+      ['xp_reward', 'INT', '', '', 'new'],
+      ['is_hidden', 'BOOLEAN', '', 'Huy hiệu bất ngờ'],
+    ],
+    idx: [],
+  },
+  user_achievements: { g: 'phase2', phase: 'p2',
+    desc: 'Huy hiệu mỗi người đã đạt.',
+    cols: [
+      ['user_id', 'BIGINT', 'PK FK'],
+      ['achievement_id', 'BIGINT', 'PK FK'],
+      ['earned_at', 'TIMESTAMP', ''],
+    ],
+    idx: ['PRIMARY KEY (user_id, achievement_id)'],
+    removed: 'cột id (dùng khóa chính kép)',
+  },
+};
+
+// ---------- Quan hệ: bảng con.cột FK → bảng cha.id ----------
+const RELS = [
+  { c: 'user_settings', fk: 'user_id', p: 'users', label: 'cài đặt', one: true },
+  { c: 'user_progress', fk: 'user_id', p: 'users', label: 'streak, XP', one: true },
+  { c: 'daily_activity', fk: 'user_id', p: 'users', label: 'hoạt động theo ngày' },
+  { c: 'notification_logs', fk: 'user_id', p: 'users', label: 'nhận email' },
+  { c: 'user_words', fk: 'user_id', p: 'users', label: 'lưu từ' },
+  { c: 'review_sessions', fk: 'user_id', p: 'users', label: 'buổi ôn' },
+  { c: 'decks', fk: 'user_id', p: 'users', label: 'tạo deck' },
+  { c: 'user_achievements', fk: 'user_id', p: 'users', label: 'đạt huy hiệu' },
+  { c: 'user_words', fk: 'dictionary_entry_id', p: 'dictionary_entries', label: 'tham chiếu từ điển', optional: true },
+  { c: 'word_contexts', fk: 'user_word_id', p: 'user_words', label: 'nhiều ngữ cảnh' },
+  { c: 'review_logs', fk: 'user_word_id', p: 'user_words', label: 'lịch sử ôn' },
+  { c: 'review_logs', fk: 'word_context_id', p: 'word_contexts', label: 'câu dùng trong bài', optional: true },
+  { c: 'review_logs', fk: 'session_id', p: 'review_sessions', label: 'thuộc buổi ôn', optional: true },
+  { c: 'review_sessions', fk: 'deck_id', p: 'decks', label: 'ôn theo deck', optional: true },
+  { c: 'deck_words', fk: 'deck_id', p: 'decks', label: 'chứa' },
+  { c: 'deck_words', fk: 'user_word_id', p: 'user_words', label: 'thuộc deck' },
+  { c: 'user_achievements', fk: 'achievement_id', p: 'achievements', label: 'cấp' },
+  { c: 'word_contexts', fk: 'user_id', p: 'users', label: 'sở hữu', dashed: true },
+  { c: 'review_logs', fk: 'user_id', p: 'users', label: 'sở hữu', dashed: true },
+];
+
+const COLUMNS = [
+  { top: 0,   tables: ['user_settings', 'user_progress', 'daily_activity', 'notification_logs'] },
+  { top: 220, tables: ['users'] },
+  { top: 0,   tables: ['user_words', 'review_sessions', 'decks', 'user_achievements'] },
+  { top: 0,   tables: ['dictionary_entries', 'word_contexts', 'review_logs', 'deck_words', 'achievements'] },
+  { top: 0,   tables: ['context_meaning_cache'] },
+];
+const CARD_W = 280, COL_PITCH = 400, V_GAP = 30, PAD = 30;
+
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+const shortType = t => t.replace(/\(.*\)/, '').replace(' NULL', '').toLowerCase();
+
+// ---------- Chi tiết bảng (sinh từ TABLES) ----------
+function buildDetails() {
+  const order = ['account', 'vocab', 'review', 'motivation', 'support', 'shared', 'phase2'];
+  let html = '';
+  for (const g of order) {
+    const names = Object.keys(TABLES).filter(n => TABLES[n].g === g);
+    html += `<div class="group-title" style="--c:var(${GROUPS[g].color})"><i></i>${GROUPS[g].label}</div><div class="tcards">`;
+    for (const name of names) {
+      const t = TABLES[name];
+      const [pc, pl] = PHASE[t.phase];
+      const rows = t.cols.map(([n, type, key = '', note = '', flag = '']) => {
+        const keys = key.split(' ').filter(Boolean).map(k => `<span class="keyb ${k === 'PK' ? 'pk' : k === 'FK' ? 'fk' : ''}">${k}</span>`).join('');
+        const badge = flag === 'new' ? ' <span class="pill add">Mới</span>' : flag === 'p2' ? ' <span class="pill p2">Tốt nếu có</span>' : '';
+        return `<tr class="${flag}"><td>${esc(n)}${keys}</td><td class="type">${esc(type)}</td><td>${esc(note)}${badge}</td></tr>`;
+      }).join('');
+      const foot = [];
+      if (t.idx.length) foot.push(`<div><b>Index:</b> ${t.idx.map(i => `<code>${esc(i)}</code>`).join(' · ')}</div>`);
+      if (t.removed) foot.push(`<div class="rmline"><span class="pill rm">Đã bỏ</span> ${esc(t.removed)}</div>`);
+      html += `<article class="tcard" id="t-${name}" style="--c:var(${GROUPS[g].color})">
+        <header><h3>${name}</h3><span class="pill ${pc}">${pl}</span></header>
+        <p class="desc">${esc(t.desc)}</p>
+        <div style="overflow-x:auto"><table><thead><tr><th>Cột</th><th>Kiểu</th><th>Ghi chú</th></tr></thead><tbody>${rows}</tbody></table></div>
+        ${foot.length ? `<div class="foot">${foot.join('')}</div>` : ''}
+      </article>`;
+    }
+    html += '</div>';
+  }
+  document.getElementById('details').innerHTML = html;
+}
+
+// ---------- Sơ đồ ----------
+const hiddenGroups = new Set();
+let scale = 1, pinned = null, stageW = 0, stageH = 0;
+const stage = document.getElementById('stage');
+const svg = document.getElementById('lines');
+const viewport = document.getElementById('viewport');
+const sizer = document.getElementById('sizer');
+const cards = {};
+const colOf = {};
+COLUMNS.forEach((col, i) => col.tables.forEach(t => colOf[t] = i));
+
+function isHidden(name) {
+  const t = TABLES[name];
+  const mvpOnly = document.getElementById('mvpOnly').checked;
+  return hiddenGroups.has(t.g) || (mvpOnly && t.phase !== 'mvp');
+}
+
+function buildCards() {
+  const keysOnly = document.getElementById('keysOnly').checked;
+  const mvpOnly = document.getElementById('mvpOnly').checked;
+  for (const [name, t] of Object.entries(TABLES)) {
+    let el = cards[name];
+    if (!el) {
+      el = document.createElement('div');
+      el.className = 'card' + (t.phase === 'p2' ? ' phase2' : t.phase === 'ai' ? ' ai' : '');
+      el.dataset.name = name;
+      el.style.setProperty('--c', `var(${GROUPS[t.g].color})`);
+      el.addEventListener('mouseenter', () => { if (!pinned) focus(name); });
+      el.addEventListener('mouseleave', () => { if (!pinned) focus(null); });
+      el.addEventListener('click', e => { e.stopPropagation(); pinned = pinned === name ? null : name; focus(pinned || name); });
+      el.addEventListener('dblclick', () => document.getElementById('t-' + name)?.scrollIntoView({ behavior: 'smooth' }));
+      stage.appendChild(el);
+      cards[name] = el;
+    }
+    const rows = t.cols
+      .filter(c => !keysOnly || c[2])
+      .filter(c => !mvpOnly || c[4] !== 'p2')
+      .map(([n, type, key = '', note = '', flag = '']) => {
+        const kcls = key.includes('PK') ? 'pk' : key.includes('FK') ? 'fk' : '';
+        return `<div class="row ${flag}" data-col="${n}"><span class="k ${kcls}">${esc(key)}</span>` +
+          `<span class="n${note ? ' note' : ''}"${note ? ` title="${esc(note)}"` : ''}>${esc(n)}</span><span class="t">${esc(shortType(type))}</span></div>`;
+      }).join('');
+    const tag = t.phase === 'ai' ? 'Khi bật AI' : GROUPS[t.g].label;
+    el.innerHTML = `<div class="head"><span>${name}</span><span class="tag">${tag}</span></div>${rows}`;
+    el.style.display = isHidden(name) ? 'none' : '';
+  }
+}
+
+function layout() {
+  stageW = 0; stageH = 0;
+  let ci = 0;
+  COLUMNS.forEach(col => {
+    const visible = col.tables.filter(n => cards[n].style.display !== 'none');
+    if (!visible.length) return;
+    let y = PAD + col.top;
+    const x = PAD + ci * COL_PITCH;
+    for (const name of visible) {
+      const el = cards[name];
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.dataset.col = ci;
+      y += el.offsetHeight + V_GAP;
+      stageW = Math.max(stageW, x + CARD_W + PAD);
+      stageH = Math.max(stageH, y + PAD);
+    }
+    ci++;
+  });
+  svg.setAttribute('width', stageW);
+  svg.setAttribute('height', stageH);
+  stage.style.width = stageW + 'px';
+  stage.style.height = stageH + 'px';
+  drawLines();
+  applyScale();
+}
+
+function rowY(name, col) {
+  const el = cards[name];
+  const row = el.querySelector(`.row[data-col="${col}"]`);
+  if (!row) return el.offsetTop + 18;
+  return el.offsetTop + row.offsetTop + row.offsetHeight / 2;
+}
+
+function marker(x, y, d, kind) {
+  const L = (x1, y1, x2, y2) => `<line class="mk" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+  const C = cx => `<circle class="mk" cx="${cx}" cy="${y}" r="4"/>`;
+  if (kind === 'many') return L(x, y - 7, x + d * 12, y) + L(x, y + 7, x + d * 12, y) + C(x + d * 19);
+  if (kind === 'one') return L(x + d * 7, y - 7, x + d * 7, y + 7) + L(x + d * 12, y - 7, x + d * 12, y + 7);
+  if (kind === 'zeroOne') return L(x + d * 7, y - 7, x + d * 7, y + 7) + C(x + d * 16);
+  return '';
+}
+
+function drawLines() {
+  let out = '';
+  RELS.forEach((r, i) => {
+    const ce = cards[r.c], pe = cards[r.p];
+    if (ce.style.display === 'none' || pe.style.display === 'none') return;
+    if (!ce.querySelector(`.row[data-col="${r.fk}"]`)) return; // cột FK đang bị ẩn (chế độ chỉ Phải có)
+    const cc = +ce.dataset.col, pc = +pe.dataset.col;
+    const yc = rowY(r.c, r.fk), yp = rowY(r.p, 'id');
+    let xc, xp, dc, dp, k;
+    if (cc === pc) {
+      xc = ce.offsetLeft + CARD_W; xp = pe.offsetLeft + CARD_W; dc = dp = 1;
+      k = 50 + Math.min(60, Math.abs(yc - yp) * 0.08);
+    } else if (pc > cc) {
+      xc = ce.offsetLeft + CARD_W; xp = pe.offsetLeft; dc = 1; dp = -1; k = (xp - xc) / 2;
+    } else {
+      xc = ce.offsetLeft; xp = pe.offsetLeft + CARD_W; dc = -1; dp = 1; k = (xc - xp) / 2;
+    }
+    const c1x = xc + dc * k, c2x = xp + dp * k;
+    const path = `M${xc},${yc} C${c1x},${yc} ${c2x},${yp} ${xp},${yp}`;
+    const mx = 0.125 * xc + 0.375 * c1x + 0.375 * c2x + 0.125 * xp;
+    const my = 0.5 * yc + 0.5 * yp;
+    out += `<g class="rel${r.dashed ? ' dashed' : ''}" data-i="${i}">` +
+      `<path class="edge" d="${path}"/>` +
+      marker(xc, yc, dc, r.one ? 'one' : 'many') +
+      marker(xp, yp, dp, r.optional ? 'zeroOne' : 'one') +
+      `<text class="label" x="${mx}" y="${my - 6}" text-anchor="middle">${esc(r.label)}</text></g>`;
+  });
+  svg.innerHTML = out;
+}
+
+function focus(name) {
+  stage.classList.toggle('focus', !!name);
+  Object.values(cards).forEach(c => c.classList.remove('hl', 'self'));
+  stage.querySelectorAll('.row.hl').forEach(r => r.classList.remove('hl'));
+  svg.querySelectorAll('.rel').forEach(g => g.classList.remove('hl'));
+  if (!name) return;
+  cards[name].classList.add('hl', 'self');
+  svg.querySelectorAll('.rel').forEach(g => {
+    const r = RELS[g.dataset.i];
+    if (r.c !== name && r.p !== name) return;
+    g.classList.add('hl');
+    cards[r.c].classList.add('hl');
+    cards[r.p].classList.add('hl');
+    cards[r.c].querySelector(`.row[data-col="${r.fk}"]`)?.classList.add('hl');
+    cards[r.p].querySelector('.row[data-col="id"]')?.classList.add('hl');
+  });
+  svg.querySelectorAll('.rel.hl').forEach(g => svg.appendChild(g));
+}
+
+function applyScale() {
+  stage.style.transform = `scale(${scale})`;
+  sizer.style.width = stageW * scale + 'px';
+  sizer.style.height = stageH * scale + 'px';
+  document.getElementById('zval').textContent = Math.round(scale * 100) + '%';
+}
+function setScale(s, cx, cy) {
+  const old = scale;
+  scale = Math.min(2, Math.max(0.3, s));
+  if (cx !== undefined) {
+    const sx = (viewport.scrollLeft + cx) / old, sy = (viewport.scrollTop + cy) / old;
+    applyScale();
+    viewport.scrollLeft = sx * scale - cx;
+    viewport.scrollTop = sy * scale - cy;
+  } else applyScale();
+}
+function fit() { setScale(Math.min(1, (viewport.clientWidth - 4) / stageW)); viewport.scrollTo(0, 0); }
+document.getElementById('zin').onclick = () => setScale(scale + 0.1);
+document.getElementById('zout').onclick = () => setScale(scale - 0.1);
+document.getElementById('zfit').onclick = fit;
+viewport.addEventListener('wheel', e => {
+  if (!e.ctrlKey) return;
+  e.preventDefault();
+  const rect = viewport.getBoundingClientRect();
+  setScale(scale * (e.deltaY < 0 ? 1.1 : 0.9), e.clientX - rect.left, e.clientY - rect.top);
+}, { passive: false });
+
+let drag = null;
+viewport.addEventListener('mousedown', e => {
+  if (e.target.closest('.card')) return;
+  drag = { x: e.clientX, y: e.clientY, l: viewport.scrollLeft, t: viewport.scrollTop, moved: false };
+  viewport.classList.add('dragging');
+});
+window.addEventListener('mousemove', e => {
+  if (!drag) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+  if (Math.abs(dx) + Math.abs(dy) > 3) drag.moved = true;
+  viewport.scrollLeft = drag.l - dx;
+  viewport.scrollTop = drag.t - dy;
+});
+window.addEventListener('mouseup', () => {
+  if (drag && !drag.moved && pinned) { pinned = null; focus(null); }
+  drag = null;
+  viewport.classList.remove('dragging');
+});
+
+function rebuild() { pinned = null; focus(null); buildCards(); layout(); }
+
+function buildChips() {
+  const box = document.getElementById('chips');
+  for (const [key, g] of Object.entries(GROUPS)) {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.style.setProperty('--c', `var(${g.color})`);
+    b.setAttribute('aria-pressed', 'true');
+    b.innerHTML = `<i></i>${g.label}`;
+    b.title = 'Bấm để ẩn hoặc hiện nhóm này';
+    b.onclick = () => {
+      if (key === 'account') return; // users là trung tâm, luôn hiện
+      hiddenGroups.has(key) ? hiddenGroups.delete(key) : hiddenGroups.add(key);
+      b.setAttribute('aria-pressed', String(!hiddenGroups.has(key)));
+      rebuild();
+    };
+    box.appendChild(b);
+  }
+}
+
+document.getElementById('keysOnly').onchange = rebuild;
+document.getElementById('mvpOnly').onchange = () => { rebuild(); fit(); };
+window.addEventListener('resize', () => { if (scale > (viewport.clientWidth - 4) / stageW) fit(); });
+
+buildDetails();
+buildChips();
+buildCards();
+layout();
+fit();
+if (scale < 0.7) setScale(0.7);
+</script>
+</body>
+</html>

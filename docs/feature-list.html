@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chọn chức năng Transaver Word</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Lexend:wght@600&display=swap">
+<style>
+  /* Layout: một cột danh sách tích chọn, chia 3 mức ưu tiên, thanh gửi dính ở đáy. Màu và font theo brand/tokens.json */
+  :root {
+    --brand: #0F6E66;
+    --brand-strong: #0B5650;
+    --brand-tint: #E3F3F0;
+    --on-brand: #FFFFFF;
+    --accent-strong: #8A5A00;
+    --accent-tint: #FDF1D6;
+    --ink: #14201F;
+    --ink-muted: #56645F;
+    --surface-0: #F7F9F8;
+    --surface-1: #FFFFFF;
+    --line: #D9E2DF;
+    --line-strong: #7D8C88;
+    --danger: #B42318;
+    --must: #B42318;
+    --good: #8A5A00;
+    --later: #56645F;
+    --font-display: "Lexend", "Be Vietnam Pro", system-ui, sans-serif;
+    --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --brand: #3CC4B4; --brand-strong: #6BD9CB; --brand-tint: #12302D; --on-brand: #0E1514;
+      --accent-strong: #F7B73A; --accent-tint: #3A2E10;
+      --ink: #E8EFEE; --ink-muted: #9AAAA6; --surface-0: #0E1514; --surface-1: #162120;
+      --line: #2A3836; --line-strong: #5F716D; --danger: #F97066;
+      --must: #F97066; --good: #F7B73A; --later: #9AAAA6;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --brand: #3CC4B4; --brand-strong: #6BD9CB; --brand-tint: #12302D; --on-brand: #0E1514;
+    --accent-strong: #F7B73A; --accent-tint: #3A2E10;
+    --ink: #E8EFEE; --ink-muted: #9AAAA6; --surface-0: #0E1514; --surface-1: #162120;
+    --line: #2A3836; --line-strong: #5F716D; --danger: #F97066;
+    --must: #F97066; --good: #F7B73A; --later: #9AAAA6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--surface-0); color: var(--ink);
+    font: 15px/1.5 var(--font-body);
+  }
+  .wrap {
+    max-width: 760px; margin: 0 auto;
+    padding-block: 28px 120px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: grid; gap: 24px;
+  }
+  h1 { font: 600 26px/1.25 var(--font-display); letter-spacing: -0.01em; margin: 0; text-wrap: balance; }
+  .intro { display: grid; gap: 6px; }
+  .intro p { margin: 0; color: var(--ink-muted); max-width: 62ch; }
+  .prev { font-size: 13px; color: var(--brand-strong); background: var(--brand-tint); padding: 6px 10px; border-radius: 6px; justify-self: start; }
+  .quick { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn {
+    font: 500 14px/1 var(--font-body); color: var(--ink); background: var(--surface-1);
+    border: 1px solid var(--line-strong); border-radius: 10px; padding: 9px 14px; cursor: pointer;
+  }
+  .btn:hover { border-color: var(--brand); color: var(--brand-strong); }
+  .btn:focus-visible, .item:focus-within, .primary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+  .tier { background: var(--surface-1); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .tier > header {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    padding: 14px 18px; border-bottom: 1px solid var(--line);
+  }
+  .tier h2 { margin: 0; font: 600 18px/1.3 var(--font-display); color: var(--c); }
+  .tier header p { margin: 0; color: var(--ink-muted); font-size: 13px; flex: 1 1 240px; }
+  .tier .count { font-size: 13px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .group { padding: 10px 10px 8px; }
+  .group + .group { border-top: 1px solid var(--line); }
+  .group h3 {
+    margin: 4px 8px 6px; font: 600 12px/16px var(--font-body);
+    letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted);
+  }
+  .item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 8px; border-radius: 8px; cursor: pointer;
+  }
+  .item:hover { background: var(--surface-0); }
+  .item input { width: 18px; height: 18px; accent-color: var(--brand); flex: none; margin: 0; cursor: pointer; }
+  .item .label { flex: 1; }
+  .item:has(input:checked) { background: var(--brand-tint); }
+  .item:has(input:checked) .label { font-weight: 500; }
+  .done {
+    font-size: 12px; font-weight: 600; color: var(--accent-strong); background: var(--accent-tint);
+    padding: 2px 8px; border-radius: 6px; white-space: nowrap;
+  }
+
+  .note-box { display: grid; gap: 6px; }
+  .note-box label { font-weight: 500; }
+  textarea {
+    font: inherit; color: var(--ink); background: var(--surface-1);
+    border: 1px solid var(--line-strong); border-radius: 10px; padding: 10px 12px; min-height: 80px; resize: vertical;
+  }
+  textarea:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+
+  .bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+    background: var(--surface-1); border-top: 1px solid var(--line);
+    padding-block: 12px calc(12px + env(safe-area-inset-bottom, 0px));
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .bar-inner { max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .tally { font-variant-numeric: tabular-nums; }
+  .tally b { font-family: var(--font-display); font-size: 18px; }
+  .tally span { color: var(--ink-muted); font-size: 13px; margin-left: 6px; }
+  .status { flex: 1 1 200px; font-size: 13px; color: var(--ink-muted); }
+  .status.ok { color: var(--brand-strong); font-weight: 500; }
+  .status.err { color: var(--danger); }
+  .primary {
+    font: 600 15px/1 var(--font-body); color: var(--on-brand); background: var(--brand);
+    border: 0; border-radius: 10px; padding: 12px 20px; cursor: pointer;
+  }
+  .primary:hover { background: var(--brand-strong); }
+  .primary:disabled { opacity: .5; cursor: default; }
+  @media (prefers-reduced-motion: no-preference) { .item { transition: background-color .12s; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="intro">
+    <h1>Chọn chức năng cho Transaver Word</h1>
+    <p>Tích vào những chức năng bạn muốn làm, rồi bấm <b>Gửi lựa chọn</b>. Claude sẽ nhận lựa chọn này và viết thành file quyết định cuối cùng. Nhãn ưu tiên chỉ là gợi ý, bạn chọn mục nào cũng được.</p>
+    <div class="prev" id="prev" hidden></div>
+  </div>
+
+  <div class="quick">
+    <button class="btn" id="pickMust" type="button">Chọn tất cả mục "Phải có"</button>
+    <button class="btn" id="clearAll" type="button">Bỏ chọn hết</button>
+  </div>
+
+  <div id="tiers"></div>
+
+  <div class="note-box">
+    <label for="note">Ghi chú thêm (không bắt buộc)</label>
+    <textarea id="note" placeholder="Ví dụ: chức năng nào muốn làm trước, chỗ nào còn phân vân…"></textarea>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="bar-inner">
+    <div class="tally"><b id="count">0</b><span>chức năng đã chọn</span></div>
+    <div class="status" id="status" role="status"></div>
+    <button class="primary" id="submit" type="button">Gửi lựa chọn</button>
+  </div>
+</div>
+
+<script>
+const TIERS = [
+  {
+    id: 'must', title: 'Phải có', color: '--must',
+    hint: 'Đề xuất cho MVP: thiếu là app mất ý nghĩa hoặc không phát hành được.',
+    groups: [
+      ['Extension', [
+        ['m1', 'Dịch khi bôi đen (nhiều ngôn ngữ, đọc to, sao chép)', true],
+        ['m2', 'Nút "Lưu" kèm câu ngữ cảnh và link trang'],
+        ['m3', 'Nghĩa theo ngữ cảnh, phiên âm, phát âm'],
+        ['m4', 'Lưu offline, tự đồng bộ khi có mạng'],
+      ]],
+      ['Tài khoản', [
+        ['m5', 'Đăng nhập Google'],
+        ['m6', 'Dùng thử không cần tài khoản'],
+        ['m7', 'Đồng bộ giữa extension và web app'],
+      ]],
+      ['Từ vựng', [
+        ['m8', 'Danh sách từ đã lưu: tìm, sửa, xóa'],
+        ['m9', 'Đánh dấu "đã biết" để bỏ khỏi lịch ôn'],
+        ['m10', 'Một từ có nhiều câu ngữ cảnh'],
+      ]],
+      ['Ôn tập', [
+        ['m11', 'Lịch ôn tự động (FSRS)'],
+        ['m12', 'Flashcard và trắc nghiệm'],
+        ['m13', 'Điền chỗ trống bằng câu gốc'],
+      ]],
+      ['Cá nhân hóa và nhắc học', [
+        ['m14', 'Onboarding 3 câu hỏi'],
+        ['m15', 'Mục tiêu mỗi ngày, giờ nhắc học'],
+        ['m16', 'Nhắc học qua thông báo trình duyệt và email'],
+      ]],
+      ['Động lực', [
+        ['m17', 'Streak và thẻ đóng băng'],
+        ['m18', 'Thống kê cơ bản: đã lưu, đã thuộc, cần ôn hôm nay'],
+      ]],
+      ['Nền tảng', [
+        ['m19', 'Chính sách quyền riêng tư, xóa tài khoản'],
+        ['m20', 'Kiểm soát chi phí AI (cache, giới hạn lượt)'],
+        ['m21', 'Nút góp ý và ghi số liệu sử dụng'],
+      ]],
+    ],
+  },
+  {
+    id: 'good', title: 'Tốt nếu có', color: '--good',
+    hint: 'Làm sau khi có người dùng thật.',
+    groups: [
+      ['Extension', [
+        ['g1', 'Highlight từ đã lưu khi lướt web'],
+        ['g2', 'Side panel ôn nhanh trong trình duyệt'],
+        ['g3', 'Phím tắt lưu nhanh'],
+        ['g4', 'Lưu cụm từ, thành ngữ'],
+      ]],
+      ['Từ vựng', [
+        ['g5', 'Bộ từ (deck) và tag'],
+        ['g6', 'Xuất dữ liệu (CSV, Anki)'],
+      ]],
+      ['Ôn tập', [
+        ['g7', 'Dạng bài nghe và gõ chính tả'],
+        ['g8', 'Ôn riêng từ khó'],
+        ['g9', 'Chống dồn ứ khi quá nhiều từ đến hạn'],
+        ['g10', 'Tùy chỉnh mức ghi nhớ và thông tin trên thẻ'],
+      ]],
+      ['Động lực và thống kê', [
+        ['g11', 'XP, cấp độ, huy hiệu'],
+        ['g12', 'Báo cáo tuần'],
+        ['g13', 'Heatmap và biểu đồ tiến bộ'],
+      ]],
+      ['Vận hành', [
+        ['g14', 'Trang admin cơ bản'],
+      ]],
+    ],
+  },
+  {
+    id: 'later', title: 'Để sau', color: '--later',
+    hint: 'Tốn công hoặc cần nhiều người dùng mới có ý nghĩa.',
+    groups: [
+      ['', [
+        ['l1', 'Ảnh minh họa cho từ'],
+        ['l2', 'Hỗ trợ Firefox, Edge'],
+        ['l3', 'Nhập từ Anki, Quizlet'],
+        ['l4', 'Chia sẻ bộ từ'],
+        ['l5', 'Mini game ghép cặp có tính giờ'],
+        ['l6', 'Tự đặt câu, AI chấm'],
+        ['l7', 'Học cùng bạn bè, bảng xếp hạng'],
+        ['l8', 'Đổi điểm lấy theme, Premium'],
+        ['l9', 'Nhắc học qua Telegram'],
+      ]],
+    ],
+  },
+];
+
+const ITEMS = {};
+TIERS.forEach(t => t.groups.forEach(([g, items]) => items.forEach(([id, label, done]) => {
+  ITEMS[id] = { id, label, tier: t.title, group: g, done: !!done };
+})));
+
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+$('tiers').style.display = 'grid';
+$('tiers').style.gap = '16px';
+$('tiers').innerHTML = TIERS.map(t => {
+  const total = t.groups.reduce((n, [, items]) => n + items.length, 0);
+  return `<section class="tier" style="--c: var(${t.color})">
+    <header><h2>${t.title}</h2><p>${t.hint}</p><span class="count" data-tier="${t.id}">0/${total}</span></header>
+    ${t.groups.map(([g, items]) => `<div class="group">${g ? `<h3>${esc(g)}</h3>` : ''}
+      ${items.map(([id, label, done]) => `<label class="item" for="f-${id}">
+        <input type="checkbox" id="f-${id}" value="${id}" data-tier="${t.id}">
+        <span class="label">${esc(label)}</span>${done ? '<span class="done">Đã có</span>' : ''}
+      </label>`).join('')}</div>`).join('')}
+  </section>`;
+}).join('');
+
+const boxes = [...document.querySelectorAll('#tiers input[type=checkbox]')];
+function refresh() {
+  $('count').textContent = boxes.filter(b => b.checked).length;
+  for (const t of TIERS) {
+    const own = boxes.filter(b => b.dataset.tier === t.id);
+    document.querySelector(`.count[data-tier="${t.id}"]`).textContent =
+      `${own.filter(b => b.checked).length}/${own.length}`;
+  }
+}
+boxes.forEach(b => b.addEventListener('change', refresh));
+$('pickMust').onclick = () => { boxes.forEach(b => { if (b.dataset.tier === 'must') b.checked = true; }); refresh(); };
+$('clearAll').onclick = () => { boxes.forEach(b => b.checked = false); refresh(); };
+refresh();
+
+function setStatus(text, cls) { const s = $('status'); s.textContent = text; s.className = 'status' + (cls ? ' ' + cls : ''); }
+function fmt(iso) { try { return new Date(iso).toLocaleString('vi-VN'); } catch { return iso; } }
+
+function summaryText(ids, note) {
+  const lines = ['Các chức năng đã chọn:'];
+  for (const t of TIERS) {
+    const picked = ids.map(id => ITEMS[id]).filter(it => it && it.tier === t.title);
+    if (!picked.length) continue;
+    lines.push('', `[${t.title}]`);
+    picked.forEach(it => lines.push(`- ${it.label}`));
+  }
+  if (note) lines.push('', 'Ghi chú: ' + note);
+  return lines.join('\n');
+}
+
+// Trang được mở qua server nhỏ ở máy (http://127.0.0.1:...). Mở thẳng file thì không gửi được, sẽ sao chép thay thế.
+const viaServer = location.protocol.startsWith('http');
+
+$('submit').onclick = async () => {
+  const ids = boxes.filter(b => b.checked).map(b => b.value);
+  if (!ids.length) { setStatus('Bạn chưa chọn chức năng nào.', 'err'); return; }
+  const note = $('note').value.trim();
+  const payload = {
+    selected: ids,
+    items: ids.map(id => ({ id, label: ITEMS[id].label, tier: ITEMS[id].tier, group: ITEMS[id].group })),
+    note,
+    submittedAt: new Date().toISOString(),
+  };
+  $('submit').disabled = true;
+  if (viaServer) {
+    try {
+      const res = await fetch('/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('server trả về lỗi ' + res.status);
+      setStatus(`Đã gửi ${ids.length} chức năng cho Claude. Bạn có thể đóng trang này.`, 'ok');
+      $('prev').textContent = `Đã gửi lúc ${fmt(payload.submittedAt)}.`;
+      $('prev').hidden = false;
+      $('submit').textContent = 'Đã gửi';
+      return;
+    } catch (e) {
+      setStatus('Không gửi được (' + (e && e.message ? e.message : 'mất kết nối tới server') + '). Nhờ Claude chạy lại server rồi thử lại.', 'err');
+    }
+  } else {
+    // Mở file trực tiếp (không qua claude.ai): sao chép danh sách để dán vào chat
+    try {
+      await navigator.clipboard.writeText(summaryText(ids, note));
+      setStatus('Trang này không gửi trực tiếp được. Danh sách đã được sao chép, hãy dán vào chat với Claude.', 'ok');
+    } catch {
+      setStatus('Trang này không gửi trực tiếp được. Hãy nhờ Claude chạy server rồi mở link http://127.0.0.1:8765.', 'err');
+    }
+  }
+  $('submit').disabled = false;
+};
+</script>
+
+</body>
+</html>

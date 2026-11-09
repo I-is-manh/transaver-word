@@ -48,6 +48,7 @@
     sourceLang: AUTO, // A: ngôn ngữ nguồn
     targetLang: 'vi', // B: ngôn ngữ đích
     showIcon: true, // hiện icon khi bôi đen
+    highlight: true, // gạch chân từ đã lưu khi lướt web (mục 8.4)
   };
 
   const byCode = new Map(LANGUAGES.map((l) => [l.code.toLowerCase(), l]));

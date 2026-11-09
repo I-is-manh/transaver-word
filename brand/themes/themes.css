@@ -1,0 +1,1108 @@
+/* Sinh tự động từ themes.json bằng build_themes.py. Không sửa tay file này. */
+/* Dùng: đặt data-tv-theme="<id>" lên <html> hoặc phần tử gốc.
+   Mặc định theo hệ điều hành; ép chế độ bằng data-tv-mode="light" | "dark". */
+
+:root {
+  --tv-duration-fast: 150ms;
+  --tv-duration-base: 240ms;
+  --tv-duration-flip: 420ms;
+  --tv-duration-celebrate: 1600ms;
+  --tv-ease-standard: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --tv-ease-emphasized: cubic-bezier(0.3, 1.4, 0.5, 1);
+  --tv-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* Teal Mực · free */
+[data-tv-theme="teal"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #0F6E66;
+  --brand-strong: #0B5650;
+  --brand-tint: #E3F3F0;
+  --on-brand: #FFFFFF;
+  --ink: #14201F;
+  --ink-muted: #56645F;
+  --surface-0: #F7F9F8;
+  --surface-1: #FFFFFF;
+  --line: #D9E2DF;
+  --line-strong: #7D8C88;
+  --info: #2F5BD3;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="teal"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #3CC4B4;
+    --brand-strong: #6BD9CB;
+    --brand-tint: #12302D;
+    --on-brand: #0E1514;
+    --ink: #E8EFEE;
+    --ink-muted: #9AAAA6;
+    --surface-0: #0E1514;
+    --surface-1: #162120;
+    --line: #2A3836;
+    --line-strong: #5F716D;
+    --info: #8AA8F5;
+    --on-danger: #0E1514;
+    --on-info: #0E1514;
+    --again-bg: #F97066;
+    --again-fg: #0E1514;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="teal"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #3CC4B4;
+  --brand-strong: #6BD9CB;
+  --brand-tint: #12302D;
+  --on-brand: #0E1514;
+  --ink: #E8EFEE;
+  --ink-muted: #9AAAA6;
+  --surface-0: #0E1514;
+  --surface-1: #162120;
+  --line: #2A3836;
+  --line-strong: #5F716D;
+  --info: #8AA8F5;
+  --on-danger: #0E1514;
+  --on-info: #0E1514;
+  --again-bg: #F97066;
+  --again-fg: #0E1514;
+  --again-border: #F97066;
+}
+
+/* Biển Đêm · free */
+[data-tv-theme="sea"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #1D4E9E;
+  --brand-strong: #163C7A;
+  --brand-tint: #E6EEFA;
+  --on-brand: #FFFFFF;
+  --ink: #121A2B;
+  --ink-muted: #4F5B70;
+  --surface-0: #F6F8FB;
+  --surface-1: #FFFFFF;
+  --line: #D8DFEA;
+  --line-strong: #7A869A;
+  --info: #0F6E66;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="sea"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #7FA8F5;
+    --brand-strong: #A9C4FA;
+    --brand-tint: #16233D;
+    --on-brand: #0B1220;
+    --ink: #E7ECF5;
+    --ink-muted: #9AA6BA;
+    --surface-0: #0B1220;
+    --surface-1: #131C2E;
+    --line: #263247;
+    --line-strong: #5C6A82;
+    --info: #3CC4B4;
+    --on-danger: #0B1220;
+    --on-info: #0B1220;
+    --again-bg: #F97066;
+    --again-fg: #0B1220;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="sea"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #7FA8F5;
+  --brand-strong: #A9C4FA;
+  --brand-tint: #16233D;
+  --on-brand: #0B1220;
+  --ink: #E7ECF5;
+  --ink-muted: #9AA6BA;
+  --surface-0: #0B1220;
+  --surface-1: #131C2E;
+  --line: #263247;
+  --line-strong: #5C6A82;
+  --info: #3CC4B4;
+  --on-danger: #0B1220;
+  --on-info: #0B1220;
+  --again-bg: #F97066;
+  --again-fg: #0B1220;
+  --again-border: #F97066;
+}
+
+/* Sương Sớm · free */
+[data-tv-theme="mist"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #34495E;
+  --brand-strong: #22313F;
+  --brand-tint: #E9EEF2;
+  --on-brand: #FFFFFF;
+  --ink: #1A1F24;
+  --ink-muted: #565F68;
+  --surface-0: #F5F6F7;
+  --surface-1: #FFFFFF;
+  --line: #DDE1E5;
+  --line-strong: #7B848D;
+  --info: #0F6E66;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="mist"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #B8C7D6;
+    --brand-strong: #D9E3EC;
+    --brand-tint: #232B33;
+    --on-brand: #111518;
+    --ink: #E9ECEF;
+    --ink-muted: #A0A9B2;
+    --surface-0: #111417;
+    --surface-1: #1A1E22;
+    --line: #2C3238;
+    --line-strong: #626B74;
+    --info: #3CC4B4;
+    --on-danger: #111417;
+    --on-info: #111417;
+    --again-bg: #F97066;
+    --again-fg: #111417;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="mist"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #B8C7D6;
+  --brand-strong: #D9E3EC;
+  --brand-tint: #232B33;
+  --on-brand: #111518;
+  --ink: #E9ECEF;
+  --ink-muted: #A0A9B2;
+  --surface-0: #111417;
+  --surface-1: #1A1E22;
+  --line: #2C3238;
+  --line-strong: #626B74;
+  --info: #3CC4B4;
+  --on-danger: #111417;
+  --on-info: #111417;
+  --again-bg: #F97066;
+  --again-fg: #111417;
+  --again-border: #F97066;
+}
+
+/* Đêm Sao · premium */
+[data-tv-theme="starry"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #4B3BA8;
+  --brand-strong: #3A2D85;
+  --brand-tint: #EEEBFA;
+  --on-brand: #FFFFFF;
+  --ink: #1B1730;
+  --ink-muted: #575270;
+  --surface-0: #F7F6FB;
+  --surface-1: #FFFFFF;
+  --line: #DEDAEC;
+  --line-strong: #827C99;
+  --info: #0F6E66;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="starry"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #A99BFF;
+    --brand-strong: #CBC2FF;
+    --brand-tint: #221D40;
+    --on-brand: #0E0B1E;
+    --ink: #ECEAF7;
+    --ink-muted: #A6A1C0;
+    --surface-0: #0D0B1A;
+    --surface-1: #171429;
+    --line: #2C2745;
+    --line-strong: #655F85;
+    --info: #3CC4B4;
+    --on-danger: #0D0B1A;
+    --on-info: #0D0B1A;
+    --again-bg: #F97066;
+    --again-fg: #0D0B1A;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="starry"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #A99BFF;
+  --brand-strong: #CBC2FF;
+  --brand-tint: #221D40;
+  --on-brand: #0E0B1E;
+  --ink: #ECEAF7;
+  --ink-muted: #A6A1C0;
+  --surface-0: #0D0B1A;
+  --surface-1: #171429;
+  --line: #2C2745;
+  --line-strong: #655F85;
+  --info: #3CC4B4;
+  --on-danger: #0D0B1A;
+  --on-info: #0D0B1A;
+  --again-bg: #F97066;
+  --again-fg: #0D0B1A;
+  --again-border: #F97066;
+}
+
+/* Mùa Thu · premium */
+[data-tv-theme="autumn"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #8A4B22;
+  --brand-strong: #6B3818;
+  --brand-tint: #F6ECE3;
+  --on-brand: #FFFFFF;
+  --ink: #24180F;
+  --ink-muted: #66574A;
+  --surface-0: #F8F5F1;
+  --surface-1: #FFFFFF;
+  --line: #E6DCD1;
+  --line-strong: #8C7E71;
+  --info: #2F5BD3;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #FFFFFF;
+  --again-fg: #B42318;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="autumn"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #E0A27A;
+    --brand-strong: #F0C3A3;
+    --brand-tint: #3A261A;
+    --on-brand: #1A110B;
+    --ink: #F2EAE3;
+    --ink-muted: #B5A497;
+    --surface-0: #15100C;
+    --surface-1: #1F1812;
+    --line: #36291F;
+    --line-strong: #7B6857;
+    --info: #8AA8F5;
+    --on-danger: #15100C;
+    --on-info: #15100C;
+    --again-bg: #1F1812;
+    --again-fg: #F97066;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="autumn"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #E0A27A;
+  --brand-strong: #F0C3A3;
+  --brand-tint: #3A261A;
+  --on-brand: #1A110B;
+  --ink: #F2EAE3;
+  --ink-muted: #B5A497;
+  --surface-0: #15100C;
+  --surface-1: #1F1812;
+  --line: #36291F;
+  --line-strong: #7B6857;
+  --info: #8AA8F5;
+  --on-danger: #15100C;
+  --on-info: #15100C;
+  --again-bg: #1F1812;
+  --again-fg: #F97066;
+  --again-border: #F97066;
+}
+
+/* Đại Dương · premium */
+[data-tv-theme="ocean"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #0A6683;
+  --brand-strong: #084F66;
+  --brand-tint: #E2F2F7;
+  --on-brand: #FFFFFF;
+  --ink: #0F1E24;
+  --ink-muted: #4C5F66;
+  --surface-0: #F4F9FA;
+  --surface-1: #FFFFFF;
+  --line: #D3E3E8;
+  --line-strong: #758C94;
+  --info: #5B3FC4;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="ocean"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #4CC9E0;
+    --brand-strong: #8BDDED;
+    --brand-tint: #0F2E36;
+    --on-brand: #06161B;
+    --ink: #E4F1F4;
+    --ink-muted: #96AEB5;
+    --surface-0: #07161B;
+    --surface-1: #0E2128;
+    --line: #1D3740;
+    --line-strong: #557079;
+    --info: #B3A3FF;
+    --on-danger: #07161B;
+    --on-info: #07161B;
+    --again-bg: #F97066;
+    --again-fg: #07161B;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="ocean"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #4CC9E0;
+  --brand-strong: #8BDDED;
+  --brand-tint: #0F2E36;
+  --on-brand: #06161B;
+  --ink: #E4F1F4;
+  --ink-muted: #96AEB5;
+  --surface-0: #07161B;
+  --surface-1: #0E2128;
+  --line: #1D3740;
+  --line-strong: #557079;
+  --info: #B3A3FF;
+  --on-danger: #07161B;
+  --on-info: #07161B;
+  --again-bg: #F97066;
+  --again-fg: #07161B;
+  --again-border: #F97066;
+}
+
+/* Anh Đào · premium */
+[data-tv-theme="sakura"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #A33A6E;
+  --brand-strong: #812C57;
+  --brand-tint: #FBEAF2;
+  --on-brand: #FFFFFF;
+  --ink: #26131C;
+  --ink-muted: #6A5260;
+  --surface-0: #FCF7F9;
+  --surface-1: #FFFFFF;
+  --line: #EEDCE5;
+  --line-strong: #8F7884;
+  --info: #2F5BD3;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="sakura"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #F29AC4;
+    --brand-strong: #F8C2DB;
+    --brand-tint: #3B1A2A;
+    --on-brand: #1D0B14;
+    --ink: #F7EAF0;
+    --ink-muted: #C0A3B1;
+    --surface-0: #170C12;
+    --surface-1: #24141C;
+    --line: #3D2631;
+    --line-strong: #7B616D;
+    --info: #8AA8F5;
+    --on-danger: #170C12;
+    --on-info: #170C12;
+    --again-bg: #F97066;
+    --again-fg: #170C12;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="sakura"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #F29AC4;
+  --brand-strong: #F8C2DB;
+  --brand-tint: #3B1A2A;
+  --on-brand: #1D0B14;
+  --ink: #F7EAF0;
+  --ink-muted: #C0A3B1;
+  --surface-0: #170C12;
+  --surface-1: #24141C;
+  --line: #3D2631;
+  --line-strong: #7B616D;
+  --info: #8AA8F5;
+  --on-danger: #170C12;
+  --on-info: #170C12;
+  --again-bg: #F97066;
+  --again-fg: #170C12;
+  --again-border: #F97066;
+}
+
+/* Đom Đóm · premium */
+[data-tv-theme="firefly"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #48651C;
+  --brand-strong: #384F15;
+  --brand-tint: #EDF3E2;
+  --on-brand: #FFFFFF;
+  --ink: #182012;
+  --ink-muted: #56604B;
+  --surface-0: #F7F9F3;
+  --surface-1: #FFFFFF;
+  --line: #DDE4D2;
+  --line-strong: #7D8770;
+  --info: #2F5BD3;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="firefly"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #C4E36A;
+    --brand-strong: #DCF09F;
+    --brand-tint: #26300F;
+    --on-brand: #10160A;
+    --ink: #EAF0E1;
+    --ink-muted: #A3AD95;
+    --surface-0: #0C1109;
+    --surface-1: #151C10;
+    --line: #283222;
+    --line-strong: #616D56;
+    --info: #8AA8F5;
+    --on-danger: #0C1109;
+    --on-info: #0C1109;
+    --again-bg: #F97066;
+    --again-fg: #0C1109;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="firefly"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #C4E36A;
+  --brand-strong: #DCF09F;
+  --brand-tint: #26300F;
+  --on-brand: #10160A;
+  --ink: #EAF0E1;
+  --ink-muted: #A3AD95;
+  --surface-0: #0C1109;
+  --surface-1: #151C10;
+  --line: #283222;
+  --line-strong: #616D56;
+  --info: #8AA8F5;
+  --on-danger: #0C1109;
+  --on-info: #0C1109;
+  --again-bg: #F97066;
+  --again-fg: #0C1109;
+  --again-border: #F97066;
+}
+
+/* Giấy Kẻ Ô · premium */
+[data-tv-theme="grid"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #6A2C91;
+  --brand-strong: #522270;
+  --brand-tint: #F3EAF8;
+  --on-brand: #FFFFFF;
+  --ink: #1C1830;
+  --ink-muted: #58546B;
+  --surface-0: #F8F8FB;
+  --surface-1: #FFFFFF;
+  --line: #DCDDEA;
+  --line-strong: #7E7C94;
+  --info: #0F6E66;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="grid"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #CFA3EE;
+    --brand-strong: #E3C8F6;
+    --brand-tint: #2D1B3A;
+    --on-brand: #120E1C;
+    --ink: #ECEAF5;
+    --ink-muted: #A7A2BD;
+    --surface-0: #121019;
+    --surface-1: #1B1826;
+    --line: #2D2940;
+    --line-strong: #6B6684;
+    --info: #3CC4B4;
+    --on-danger: #121019;
+    --on-info: #121019;
+    --again-bg: #F97066;
+    --again-fg: #121019;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="grid"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #CFA3EE;
+  --brand-strong: #E3C8F6;
+  --brand-tint: #2D1B3A;
+  --on-brand: #120E1C;
+  --ink: #ECEAF5;
+  --ink-muted: #A7A2BD;
+  --surface-0: #121019;
+  --surface-1: #1B1826;
+  --line: #2D2940;
+  --line-strong: #6B6684;
+  --info: #3CC4B4;
+  --on-danger: #121019;
+  --on-info: #121019;
+  --again-bg: #F97066;
+  --again-fg: #121019;
+  --again-border: #F97066;
+}
+
+/* Bản Đồ Cổ · premium */
+[data-tv-theme="map"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #2E6B3E;
+  --brand-strong: #23532F;
+  --brand-tint: #E6F0E5;
+  --on-brand: #FFFFFF;
+  --ink: #241D14;
+  --ink-muted: #5E5343;
+  --surface-0: #F7F1E6;
+  --surface-1: #FFFCF6;
+  --line: #E3D7C3;
+  --line-strong: #8A7C66;
+  --info: #2F5BD3;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="map"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #8FCB98;
+    --brand-strong: #B6E0BC;
+    --brand-tint: #1E2E20;
+    --on-brand: #0F1510;
+    --ink: #EFE8DA;
+    --ink-muted: #B3A893;
+    --surface-0: #16130D;
+    --surface-1: #201B13;
+    --line: #362E22;
+    --line-strong: #7B6E55;
+    --info: #8AA8F5;
+    --on-danger: #16130D;
+    --on-info: #16130D;
+    --again-bg: #F97066;
+    --again-fg: #16130D;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="map"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #8FCB98;
+  --brand-strong: #B6E0BC;
+  --brand-tint: #1E2E20;
+  --on-brand: #0F1510;
+  --ink: #EFE8DA;
+  --ink-muted: #B3A893;
+  --surface-0: #16130D;
+  --surface-1: #201B13;
+  --line: #362E22;
+  --line-strong: #7B6E55;
+  --info: #8AA8F5;
+  --on-danger: #16130D;
+  --on-info: #16130D;
+  --again-bg: #F97066;
+  --again-fg: #16130D;
+  --again-border: #F97066;
+}
+
+/* Halloween · seasonal */
+[data-tv-theme="halloween"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #A63A0B;
+  --brand-strong: #822D08;
+  --brand-tint: #FCEEE6;
+  --on-brand: #FFFFFF;
+  --ink: #1E1528;
+  --ink-muted: #5C5068;
+  --surface-0: #FBF8F6;
+  --surface-1: #FFFFFF;
+  --line: #EADFD8;
+  --line-strong: #85797A;
+  --info: #5B3FC4;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #FFFFFF;
+  --again-fg: #B42318;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="halloween"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #FB9B5B;
+    --brand-strong: #FDC09A;
+    --brand-tint: #3A2216;
+    --on-brand: #170B04;
+    --ink: #F1EBF5;
+    --ink-muted: #ADA0BC;
+    --surface-0: #120D17;
+    --surface-1: #1B1522;
+    --line: #2F2738;
+    --line-strong: #6C6084;
+    --info: #B794F4;
+    --on-danger: #120D17;
+    --on-info: #120D17;
+    --again-bg: #1B1522;
+    --again-fg: #F97066;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="halloween"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #FB9B5B;
+  --brand-strong: #FDC09A;
+  --brand-tint: #3A2216;
+  --on-brand: #170B04;
+  --ink: #F1EBF5;
+  --ink-muted: #ADA0BC;
+  --surface-0: #120D17;
+  --surface-1: #1B1522;
+  --line: #2F2738;
+  --line-strong: #6C6084;
+  --info: #B794F4;
+  --on-danger: #120D17;
+  --on-info: #120D17;
+  --again-bg: #1B1522;
+  --again-fg: #F97066;
+  --again-border: #F97066;
+}
+
+/* Ngày Nhà giáo · seasonal */
+[data-tv-theme="teachers-day"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #2C5A7A;
+  --brand-strong: #214560;
+  --brand-tint: #E6EFF5;
+  --on-brand: #FFFFFF;
+  --ink: #142029;
+  --ink-muted: #4F5E69;
+  --surface-0: #F6F8FA;
+  --surface-1: #FFFFFF;
+  --line: #D8E1E8;
+  --line-strong: #77889A;
+  --info: #5B3FC4;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #B42318;
+  --again-fg: #FFFFFF;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="teachers-day"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #8EC0E4;
+    --brand-strong: #B7D7EE;
+    --brand-tint: #16283A;
+    --on-brand: #0A131B;
+    --ink: #E6EEF4;
+    --ink-muted: #9AAAB8;
+    --surface-0: #0B131A;
+    --surface-1: #131D26;
+    --line: #24323F;
+    --line-strong: #5B6C7C;
+    --info: #B3A3FF;
+    --on-danger: #0B131A;
+    --on-info: #0B131A;
+    --again-bg: #F97066;
+    --again-fg: #0B131A;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="teachers-day"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #8EC0E4;
+  --brand-strong: #B7D7EE;
+  --brand-tint: #16283A;
+  --on-brand: #0A131B;
+  --ink: #E6EEF4;
+  --ink-muted: #9AAAB8;
+  --surface-0: #0B131A;
+  --surface-1: #131D26;
+  --line: #24323F;
+  --line-strong: #5B6C7C;
+  --info: #B3A3FF;
+  --on-danger: #0B131A;
+  --on-info: #0B131A;
+  --again-bg: #F97066;
+  --again-fg: #0B131A;
+  --again-border: #F97066;
+}
+
+/* Giáng Sinh · seasonal */
+[data-tv-theme="christmas"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #B3202A;
+  --brand-strong: #8C1820;
+  --brand-tint: #FBEAEB;
+  --on-brand: #FFFFFF;
+  --ink: #1F1516;
+  --ink-muted: #615254;
+  --surface-0: #FBFAF8;
+  --surface-1: #FFFFFF;
+  --line: #E8DEDD;
+  --line-strong: #8A7C7D;
+  --info: #1E6A4C;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #FFFFFF;
+  --again-fg: #B42318;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="christmas"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #F58A8F;
+    --brand-strong: #F9B3B6;
+    --brand-tint: #3A181B;
+    --on-brand: #1A0A0C;
+    --ink: #F3ECEC;
+    --ink-muted: #B8A6A7;
+    --surface-0: #140E0F;
+    --surface-1: #1E1617;
+    --line: #382728;
+    --line-strong: #78625F;
+    --info: #6FD1A8;
+    --on-danger: #140E0F;
+    --on-info: #140E0F;
+    --again-bg: #1E1617;
+    --again-fg: #F97066;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="christmas"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #F58A8F;
+  --brand-strong: #F9B3B6;
+  --brand-tint: #3A181B;
+  --on-brand: #1A0A0C;
+  --ink: #F3ECEC;
+  --ink-muted: #B8A6A7;
+  --surface-0: #140E0F;
+  --surface-1: #1E1617;
+  --line: #382728;
+  --line-strong: #78625F;
+  --info: #6FD1A8;
+  --on-danger: #140E0F;
+  --on-info: #140E0F;
+  --again-bg: #1E1617;
+  --again-fg: #F97066;
+  --again-border: #F97066;
+}
+
+/* Tết Nguyên Đán · seasonal */
+[data-tv-theme="tet"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #A51D24;
+  --brand-strong: #821419;
+  --brand-tint: #FCEBEA;
+  --on-brand: #FFFFFF;
+  --ink: #241414;
+  --ink-muted: #64504D;
+  --surface-0: #FFF9F4;
+  --surface-1: #FFFFFF;
+  --line: #F0DDD3;
+  --line-strong: #8E7A72;
+  --info: #2F5BD3;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #FFFFFF;
+  --again-fg: #B42318;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="tet"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #F28B82;
+    --brand-strong: #F8B4AD;
+    --brand-tint: #3A1A1A;
+    --on-brand: #1A0B0B;
+    --ink: #F6ECE8;
+    --ink-muted: #BCA8A3;
+    --surface-0: #160D0C;
+    --surface-1: #211413;
+    --line: #3B2523;
+    --line-strong: #7A605B;
+    --info: #8AA8F5;
+    --on-danger: #160D0C;
+    --on-info: #160D0C;
+    --again-bg: #211413;
+    --again-fg: #F97066;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="tet"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #F28B82;
+  --brand-strong: #F8B4AD;
+  --brand-tint: #3A1A1A;
+  --on-brand: #1A0B0B;
+  --ink: #F6ECE8;
+  --ink-muted: #BCA8A3;
+  --surface-0: #160D0C;
+  --surface-1: #211413;
+  --line: #3B2523;
+  --line-strong: #7A605B;
+  --info: #8AA8F5;
+  --on-danger: #160D0C;
+  --on-info: #160D0C;
+  --again-bg: #211413;
+  --again-fg: #F97066;
+  --again-border: #F97066;
+}
+
+/* Trung Thu · seasonal */
+[data-tv-theme="mid-autumn"] {
+  --accent: #F2A516;
+  --accent-strong: #8A5A00;
+  --accent-tint: #FDF1D6;
+  --on-accent: #1D1A10;
+  --danger: #B42318;
+  --brand: #A83D17;
+  --brand-strong: #843011;
+  --brand-tint: #FCEDE5;
+  --on-brand: #FFFFFF;
+  --ink: #1A1A2E;
+  --ink-muted: #575872;
+  --surface-0: #FBF9F4;
+  --surface-1: #FFFFFF;
+  --line: #E8E1D8;
+  --line-strong: #807D8C;
+  --info: #34418E;
+  --on-danger: #FFFFFF;
+  --on-info: #FFFFFF;
+  --again-bg: #FFFFFF;
+  --again-fg: #B42318;
+  --again-border: #B42318;
+}
+@media (prefers-color-scheme: dark) {
+  [data-tv-theme="mid-autumn"]:not([data-tv-mode="light"]) {
+    --accent: #F7B73A;
+    --accent-strong: #F7B73A;
+    --accent-tint: #3A2E10;
+    --on-accent: #1D1A10;
+    --danger: #F97066;
+    --brand: #F79A6B;
+    --brand-strong: #FBC1A2;
+    --brand-tint: #382015;
+    --on-brand: #160A04;
+    --ink: #ECECF5;
+    --ink-muted: #A3A6C2;
+    --surface-0: #0C0E1A;
+    --surface-1: #151829;
+    --line: #282C47;
+    --line-strong: #5F6487;
+    --info: #9AA8F2;
+    --on-danger: #0C0E1A;
+    --on-info: #0C0E1A;
+    --again-bg: #151829;
+    --again-fg: #F97066;
+    --again-border: #F97066;
+  }
+}
+[data-tv-theme="mid-autumn"][data-tv-mode="dark"] {
+  --accent: #F7B73A;
+  --accent-strong: #F7B73A;
+  --accent-tint: #3A2E10;
+  --on-accent: #1D1A10;
+  --danger: #F97066;
+  --brand: #F79A6B;
+  --brand-strong: #FBC1A2;
+  --brand-tint: #382015;
+  --on-brand: #160A04;
+  --ink: #ECECF5;
+  --ink-muted: #A3A6C2;
+  --surface-0: #0C0E1A;
+  --surface-1: #151829;
+  --line: #282C47;
+  --line-strong: #5F6487;
+  --info: #9AA8F2;
+  --on-danger: #0C0E1A;
+  --on-info: #0C0E1A;
+  --again-bg: #151829;
+  --again-fg: #F97066;
+  --again-border: #F97066;
+}

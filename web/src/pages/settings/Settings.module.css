@@ -1,0 +1,184 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-4);
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--line);
+  align-items: start;
+}
+.row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.rowLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rowLabel label {
+  font-weight: 500;
+  /* Dòng nhãn cao bằng ô nhập (40px) và canh giữa, để thẳng hàng với ô nhập/checkbox bên phải */
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+/* Cột điều khiển: nội dung một dòng (ô nhập, checkbox) canh giữa trong dải 40px cùng hàng với nhãn */
+.rowControl {
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.rowLabel small,
+.choice small {
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+.number,
+.time,
+.select {
+  height: 40px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--ink);
+}
+.number {
+  width: 120px;
+}
+.select {
+  min-width: 260px;
+}
+
+.inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  margin: var(--space-1) 0;
+}
+
+.check input,
+.choice input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--brand);
+  flex: none;
+}
+
+.panelHint {
+  margin: 0 0 var(--space-3);
+  color: var(--ink-muted);
+}
+
+.grid2,
+.grid3 {
+  display: grid;
+  gap: var(--space-3);
+}
+.grid2 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.choice {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.choice:has(input:checked) {
+  border-color: var(--brand);
+  background: var(--brand-tint);
+}
+.choice span {
+  display: flex;
+  flex-direction: column;
+}
+
+.range {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  font-size: 14px;
+}
+.range input {
+  flex: 1;
+  max-width: 360px;
+  accent-color: var(--brand);
+}
+
+.error {
+  margin: var(--space-1) 0 0;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.saveBar {
+  position: sticky;
+  bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.saveBar span {
+  flex: 1;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+
+.danger {
+  border-color: var(--danger);
+}
+
+.dangerBtn {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.dangerSolid {
+  background: var(--again-bg);
+  color: var(--again-fg);
+  border-color: var(--again-border);
+}
+.dangerSolid:hover:not(:disabled) {
+  background: var(--again-bg);
+  filter: brightness(0.95);
+}
+
+.deleteForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  max-width: 420px;
+}
